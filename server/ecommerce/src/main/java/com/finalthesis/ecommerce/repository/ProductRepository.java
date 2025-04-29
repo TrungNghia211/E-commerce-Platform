@@ -1,0 +1,20 @@
+package com.finalthesis.ecommerce.repository;
+
+import com.finalthesis.ecommerce.dto.response.HomepageProductResponse;
+import com.finalthesis.ecommerce.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+
+    @Query(value = "SELECT p.id, p.name, p.thumbnail, min(pi.price) AS price, p.purchase_count AS purchaseCount " +
+                   "FROM product p JOIN product_item pi " +
+                   "ON p.id = pi.product_id " +
+                   "GROUP BY p.id, p.thumbnail, p.name, p.purchase_count", nativeQuery = true)
+    Page<HomepageProductResponse> getHomepageProducts(Pageable pageable);
+
+}
