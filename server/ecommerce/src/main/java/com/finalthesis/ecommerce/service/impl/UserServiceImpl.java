@@ -1,5 +1,12 @@
 package com.finalthesis.ecommerce.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.finalthesis.ecommerce.dto.request.UserCreationRequest;
 import com.finalthesis.ecommerce.dto.response.UserResponse;
 import com.finalthesis.ecommerce.entity.Role;
@@ -10,15 +17,10 @@ import com.finalthesis.ecommerce.mapper.UserMapper;
 import com.finalthesis.ecommerce.repository.RoleRepository;
 import com.finalthesis.ecommerce.repository.UserRepository;
 import com.finalthesis.ecommerce.service.UserService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserCreationRequest request) {
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new AppException(ErrorCode.USERNAME_EXISTED);
-        else if (userRepository.existsByEmail(request.getEmail()))
-            throw new AppException(ErrorCode.EMAIL_EXISTED);
-        else if (userRepository.existsByPhone(request.getPhone()))
-            throw new AppException(ErrorCode.PHONE_EXISTED);
+        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USERNAME_EXISTED);
+        else if (userRepository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.EMAIL_EXISTED);
+        else if (userRepository.existsByPhone(request.getPhone())) throw new AppException(ErrorCode.PHONE_EXISTED);
 
         User user = userMapper.toUser(request);
 
@@ -50,5 +49,4 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
-
 }

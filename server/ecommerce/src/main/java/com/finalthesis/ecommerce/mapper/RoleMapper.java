@@ -1,10 +1,11 @@
 package com.finalthesis.ecommerce.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import com.finalthesis.ecommerce.dto.request.RoleRequest;
 import com.finalthesis.ecommerce.dto.response.RoleResponse;
 import com.finalthesis.ecommerce.entity.Role;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
@@ -13,5 +14,4 @@ public interface RoleMapper {
     Role toRole(RoleRequest request);
 
     RoleResponse toRoleResponse(Role role);
-
 }

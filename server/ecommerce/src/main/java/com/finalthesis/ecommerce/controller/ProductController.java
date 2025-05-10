@@ -1,13 +1,15 @@
 package com.finalthesis.ecommerce.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
 import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.dto.response.HomepageProductResponse;
 import com.finalthesis.ecommerce.service.ProductService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -20,11 +22,9 @@ public class ProductController {
 
     @GetMapping
     ApiResponse<Page<HomepageProductResponse>> getHomepageProducts(
-            @RequestParam(name = "pageNumber") int pageNumber,
-            @RequestParam(name = "pageSize") int pageSize) {
+            @RequestParam(name = "pageNumber") int pageNumber, @RequestParam(name = "pageSize") int pageSize) {
         return ApiResponse.<Page<HomepageProductResponse>>builder()
-                          .result(productService.getHomepageProducts(pageNumber, pageSize))
-                          .build();
+                .result(productService.getHomepageProducts(pageNumber, pageSize))
+                .build();
     }
-
 }

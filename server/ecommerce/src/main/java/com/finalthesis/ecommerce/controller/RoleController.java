@@ -1,16 +1,15 @@
 package com.finalthesis.ecommerce.controller;
 
+import org.springframework.web.bind.annotation.*;
+
 import com.finalthesis.ecommerce.dto.request.RoleRequest;
 import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.dto.response.RoleResponse;
 import com.finalthesis.ecommerce.service.RoleService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/roles")
@@ -23,15 +22,15 @@ public class RoleController {
     @PostMapping
     ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse>builder()
-                          .result(roleService.createRole(request))
-                          .build();
+                .result(roleService.createRole(request))
+                .build();
     }
 
-//    @GetMapping
-//    ApiResponse<List<RoleResponse>> getAllRoles() {
-//        return ApiResponse.<List<RoleResponse>>builder()
-//                          .result(roleService.getAllRoles())
-//                          .build();
-//    }
+    //    @GetMapping
+    //    ApiResponse<List<RoleResponse>> getAllRoles() {
+    //        return ApiResponse.<List<RoleResponse>>builder()
+    //                          .result(roleService.getAllRoles())
+    //                          .build();
+    //    }
 
 }

@@ -1,9 +1,9 @@
 package com.finalthesis.ecommerce.dto.request;
 
+import java.util.Set;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
 
 @Data
 @Builder
@@ -17,5 +17,4 @@ public class RoleRequest {
     String description;
 
     Set<String> permissions;
-
 }

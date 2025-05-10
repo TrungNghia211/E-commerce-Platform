@@ -1,5 +1,10 @@
 package com.finalthesis.ecommerce.service.impl;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.finalthesis.ecommerce.dto.request.RoleRequest;
 import com.finalthesis.ecommerce.dto.response.RoleResponse;
 import com.finalthesis.ecommerce.entity.Permission;
@@ -8,13 +13,10 @@ import com.finalthesis.ecommerce.mapper.RoleMapper;
 import com.finalthesis.ecommerce.repository.PermissionRepository;
 import com.finalthesis.ecommerce.repository.RoleRepository;
 import com.finalthesis.ecommerce.service.RoleService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +37,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleResponse> getAllRoles() {
-        return roleRepository.findAll()
-                             .stream()
-                             .map(roleMapper::toRoleResponse)
-                             .toList();
+        return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
-
 }

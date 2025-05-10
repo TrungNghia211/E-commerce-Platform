@@ -1,10 +1,10 @@
 package com.finalthesis.ecommerce.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -28,5 +28,4 @@ public class VariationOption {
 
     @ManyToMany(mappedBy = "variationOptions")
     List<ProductItem> productItems;
-
 }

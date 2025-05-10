@@ -7,6 +7,6 @@ public interface AuthenticationService {
 
     AuthenticationResponse isAuthenticated(AuthenticationRequest authenticationRequest);
 
-//    IntrospectResponse introspectToken(IntrospectRequest introspectRequest);
+    //    IntrospectResponse introspectToken(IntrospectRequest introspectRequest);
 
 }

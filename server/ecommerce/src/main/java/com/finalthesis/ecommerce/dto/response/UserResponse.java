@@ -19,5 +19,4 @@ public class UserResponse {
     String email;
 
     String phone;
-
 }

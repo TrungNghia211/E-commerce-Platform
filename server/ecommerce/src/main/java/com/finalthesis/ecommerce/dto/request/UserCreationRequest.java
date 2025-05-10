@@ -27,5 +27,4 @@ public class UserCreationRequest {
 
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "INVALID_PHONE")
     String phone;
-
 }

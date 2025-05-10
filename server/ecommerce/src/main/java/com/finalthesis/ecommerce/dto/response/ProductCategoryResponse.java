@@ -15,5 +15,4 @@ public class ProductCategoryResponse {
     String name;
 
     String thumbnail;
-
 }

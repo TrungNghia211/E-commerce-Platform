@@ -1,15 +1,16 @@
 package com.finalthesis.ecommerce.exception;
 
-import com.finalthesis.ecommerce.dto.response.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.nio.file.AccessDeniedException;
-import java.util.Objects;
+import com.finalthesis.ecommerce.dto.response.ApiResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ControllerAdvice
@@ -19,20 +20,20 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiResponse<?>> handlingRuntimeException(RuntimeException exception) {
         log.error("Exception: ", exception);
         return ResponseEntity.badRequest()
-                             .body(ApiResponse.builder()
-                                              .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
-                                              .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
-                                              .build());
+                .body(ApiResponse.builder()
+                        .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
+                        .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse<?>> handlingAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         return ResponseEntity.status(errorCode.getStatusCode())
-                             .body(ApiResponse.builder()
-                                              .code(errorCode.getCode())
-                                              .message(errorCode.getMessage())
-                                              .build());
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -41,21 +42,22 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
         try {
             errorCode = ErrorCode.valueOf(enumKey);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException ignored) {
+        }
         return ResponseEntity.status(errorCode.getStatusCode())
-                             .body(ApiResponse.builder()
-                                              .code(errorCode.getCode())
-                                              .message(errorCode.getMessage())
-                                              .build());
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(value = AuthorizationDeniedException.class)
     ResponseEntity<ApiResponse> handlingAuthorizationDeniedException(AuthorizationDeniedException exception) {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-        return ResponseEntity.status(errorCode.getStatusCode()).body(ApiResponse.builder()
-                                                                                .code(errorCode.getCode())
-                                                                                .message(errorCode.getMessage())
-                                                                                .build());
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
-
 }

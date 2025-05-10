@@ -1,11 +1,11 @@
 package com.finalthesis.ecommerce.entity;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -35,10 +35,9 @@ public class User {
     LocalDateTime updatedAt;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "user_role",
-               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "role_name", referencedColumnName = "name")
-    )
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_name", referencedColumnName = "name"))
     Set<Role> roles;
-
 }

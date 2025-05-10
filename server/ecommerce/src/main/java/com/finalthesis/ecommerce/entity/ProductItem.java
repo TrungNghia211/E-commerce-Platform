@@ -1,13 +1,14 @@
 package com.finalthesis.ecommerce.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Getter
@@ -43,10 +44,9 @@ public class ProductItem {
     Product product;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "product_configuration",
-               joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id")
-    )
+    @JoinTable(
+            name = "product_configuration",
+            joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id"))
     List<VariationOption> variationOptions;
-
 }

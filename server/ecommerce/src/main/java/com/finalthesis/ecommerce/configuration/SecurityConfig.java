@@ -1,5 +1,7 @@
 package com.finalthesis.ecommerce.configuration;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,22 +19,17 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.spec.SecretKeySpec;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS_1 = {
-            "/users", // Register account
-            "/auth/token" // Login
+        "/users", // Register account
+        "/auth/token" // Login
     };
 
-    private final String[] PUBLIC_ENDPOINTS_2 = {
-            "/categories",
-            "/products"
-    };
+    private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products"};
 
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
@@ -41,19 +38,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         // The user can access these PUBLIC_ENDPOINT without a token
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_1)
-                                                                                           .permitAll()
-                                                                                           .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_2)
-                                                                                           .permitAll()
-                                                                                           .anyRequest()
-                                                                                           .authenticated()
-        );
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_2)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
 
         // The user can only access the other endpoints if they have a token
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                                                      .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
-        );
+        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
+                jwtConfigurer.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
@@ -64,8 +57,8 @@ public class SecurityConfig {
     JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                               .macAlgorithm(MacAlgorithm.HS512)
-                               .build();
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
     }
 
     @Bean
@@ -84,5 +77,4 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-
 }

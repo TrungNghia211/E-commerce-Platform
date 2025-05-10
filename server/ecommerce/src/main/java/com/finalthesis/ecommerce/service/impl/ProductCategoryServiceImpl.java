@@ -1,16 +1,17 @@
 package com.finalthesis.ecommerce.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.finalthesis.ecommerce.dto.response.ProductCategoryResponse;
 import com.finalthesis.ecommerce.mapper.ProductCategoryMapper;
 import com.finalthesis.ecommerce.repository.ProductCategoryRepository;
 import com.finalthesis.ecommerce.service.ProductCategoryService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,10 +23,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     ProductCategoryMapper productCategoryMapper;
 
     public List<ProductCategoryResponse> findAll() {
-        return productCategoryRepository.findTop8ByOrderByCreatedAtDesc()
-                                        .stream()
-                                        .map(productCategoryMapper::toProductCategoryResponse)
-                                        .toList();
+        return productCategoryRepository.findTop8ByOrderByCreatedAtDesc().stream()
+                .map(productCategoryMapper::toProductCategoryResponse)
+                .toList();
     }
-
 }

@@ -19,5 +19,4 @@ public class HomepageProductResponse {
     Double price;
 
     Integer purchaseCount;
-
 }

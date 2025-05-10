@@ -18,5 +18,4 @@ public class Permission {
     String name;
 
     String description;
-
 }

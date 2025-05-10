@@ -1,9 +1,10 @@
 package com.finalthesis.ecommerce.repository;
 
-import com.finalthesis.ecommerce.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.finalthesis.ecommerce.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
@@ -14,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByPhone(String phone);
 
     Optional<User> findByUsername(String username);
-
 }
