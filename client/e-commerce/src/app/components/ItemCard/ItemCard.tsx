@@ -1,8 +1,9 @@
 import { Card } from "antd";
+import Link from "next/link";
 
-function ItemCard({ props }: { props: any }) {
+function ItemCard({ product }: { product: any }) {
   return (
-    <>
+    <Link href={`/products/${product.id}`}>
       <Card
         hoverable
         cover={
@@ -15,13 +16,13 @@ function ItemCard({ props }: { props: any }) {
           />
         }
       >
-        <p className="truncate">{props.name}</p>
+        <p className="truncate">{product.name}</p>
         <div className="flex justify-between mt-[10px]">
-          <span>{props.price}</span>
-          <span>Đã bán: {props.purchaseCount}</span>
+          <span>{product.price}</span>
+          <span>Đã bán: {product.purchaseCount}</span>
         </div>
       </Card>
-    </>
+    </Link>
   );
 }
 

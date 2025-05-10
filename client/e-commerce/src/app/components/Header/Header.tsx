@@ -26,16 +26,16 @@ function Header() {
               <a href="">Thông báo</a>
             </li>
             <li className="mr-[10px] hover:text-[#cbd4dd] hover:cursor-pointer">
-              <a href="">Đăng ký</a>
+              <Link href="/register">Đăng ký</Link>
             </li>
             <li className="hover:text-[#cbd4dd] hover:cursor-pointer">
-              <a href="">Đăng nhập</a>
+              <Link href="/login">Đăng nhập</Link>
             </li>
           </ul>
         </nav>
 
         <div className={cx("bottomDivWrapper")}>
-          <Link className="text-amber-50" href="">
+          <Link className="text-amber-50" href="/">
             Logo
           </Link>
 

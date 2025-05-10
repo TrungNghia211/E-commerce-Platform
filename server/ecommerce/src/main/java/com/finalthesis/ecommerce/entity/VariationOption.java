@@ -17,16 +17,16 @@ public class VariationOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "variation_id", nullable = false)
-    private Variation variation;
+    Variation variation;
 
     @Column(nullable = false)
-    private String value;
+    String value;
 
     @ManyToMany(mappedBy = "variationOptions")
-    private List<ProductItem> productItems;
+    List<ProductItem> productItems;
 
 }

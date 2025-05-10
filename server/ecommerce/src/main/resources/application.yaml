@@ -13,3 +13,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+jwt:
+  signerKey: "hSnod7XmzrPT5oCRwd24a/p57vjAMTJfhXK9LnMdrpo+Wv2N1rlvjbhKebGiF/Ng"

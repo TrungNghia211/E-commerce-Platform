@@ -1,3 +1,5 @@
+-- ======================= PRODUCT =======================
+
 -- INSERT INTO product (id, name, slug, purchase_count, thumbnail)
 -- VALUES (1, "Iphone 1", "iphone1", 15, "fakeURL");
 
@@ -11,6 +13,11 @@ VALUES (2, "Iphone 2", "iphone-2", 15, "fakeURL"),
        (8, "Iphone 8", "iphone-8", 15, "fakeURL"),
        (9, "Iphone 9", "iphone-9", 15, "fakeURL"),
        (10, "Iphone 10", "iphone-10", 15, "fakeURL");
+       
+INSERT INTO product (id, name, slug, purchase_count, thumbnail)
+VALUES (11, "Áo thun Kamito", "ao-thun-kamito", 1000, "https://product.hstatic.net/1000341630/product/kamito3d2383_393ddc86c362443d848e9707e6980ede_master.jpg");
+       
+-- ======================= PRODUCT_ITEM =======================
 
 -- INSERT INTO product_item (id, sku, price, product_id)
 -- VALUES (1, "Fake sku", 10000000, 1);
@@ -25,6 +32,11 @@ VALUES  (2, "Fake sku 1", 10000000, 2),
 		(8, "Fake sku 7", 10000000, 7),
 		(9, "Fake sku 8", 10000000, 8),
 		(10, "Fake sku 9", 10000000, 9);
+        
+INSERT INTO product_item (id, sku, price, quantity_in_stock, product_id)
+VALUES (11, "Dummy SKU", 259000, 1000, 11);
+        
+-- ======================= PRODUCT_CATEGORY =======================
 
 -- INSERT INTO product_category (id, name, slug, thumbnail)
 -- VALUES ("1", "Thời trang nam", 'thoi-trang-nam', "https://down-vn.img.susercontent.com/file/687f3967b7c2fe6a134a2c11894eea4b@resize_w640_nl.webp");
@@ -42,3 +54,38 @@ VALUES  (2, "Điện Thoại & Phụ Kiện", "dien-thoai-va-phu-kien", "https:/
 INSERT INTO product_category (id, name, slug, thumbnail)
 VALUES (8, "Sức Khoẻ", "suc-khoe", "https://down-vn.img.susercontent.com/file/49119e891a44fa135f5f6f5fd4cfc747@resize_w640_nl.webp"),
 	   (9, "Mẹ & Bé", "me-va-be", "https://down-vn.img.susercontent.com/file/099edde1ab31df35bc255912bab54a5e@resize_w640_nl.webp");
+       
+-- ======================= VARIATION =======================
+
+INSERT INTO variation (id, name, product_id)
+VALUES (1, "Size", 11);
+
+-- ======================= VARIATION_OPTION =======================
+
+INSERT INTO variation_option (id, value, variation_id)
+VALUES (1, "XS", 1),
+	   (2, "S", 1),
+	   (3, "M", 1),
+	   (4, "L", 1),
+	   (5, "XL", 1),
+	   (6, "XXL", 1),
+	   (7, "3XL", 1);
+
+-- ======================= PRODUCT_CONFIGURATION =======================
+
+INSERT INTO product_configuration (product_item_id, variation_option_id)
+VALUES (11, 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+

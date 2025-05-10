@@ -13,23 +13,31 @@ export default function HomepageProducts({
   homepageProducts: any[];
   totalPages: number;
 }) {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [products, setProducts] = useState<any[]>(homepageProducts);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState(homepageProducts);
 
   const loadProducts = async (pageNumber: number) => {
-    const res = await productApiRequest.getHomepageProducts(pageNumber);
-    setProducts((prevProducts: any) => [
-      ...prevProducts,
-      ...res.payload.result.content,
-    ]);
-  };
-
-  const handleViewMore = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
-      loadProducts(currentPage);
+    try {
+      const res = await productApiRequest.getHomepageProducts(pageNumber);
+      setProducts((prevProducts: any) => [
+        ...prevProducts,
+        ...res.payload.result.content,
+      ]);
+    } catch (error) {
+      console.error("Error loading products:", error);
     }
   };
+
+  const handleViewMore = async () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
+      loadProducts(currentPage + 1);
+    }
+  };
+
+  // useEffect(() => {
+  //   loadProducts(currentPage);
+  // }, [currentPage]);
 
   return (
     <>
@@ -40,7 +48,7 @@ export default function HomepageProducts({
       <div className="mb-[20px]">
         <div className="mt-2 grid grid-cols-6 gap-x-2 gap-y-2">
           {products.map((product: any) => (
-            <ItemCard key={product.id} props={product} />
+            <ItemCard key={product.id} product={product} />
           ))}
         </div>
       </div>

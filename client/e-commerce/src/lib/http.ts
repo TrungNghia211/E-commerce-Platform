@@ -1,8 +1,10 @@
+import { log } from "console";
+
 type CustomOptions = Omit<RequestInit, "method"> & {
   baseUrl?: string | undefined;
 };
 
-class HttpError extends Error {
+export class HttpError extends Error {
   status: number;
   payload: any;
 
@@ -32,6 +34,8 @@ const request = async <Response>(
     ? `${baseUrl}${url}`
     : `${baseUrl}/${url}`;
 
+  console.log("options: ", options);
+
   const res = await fetch(fullUrl, {
     ...options,
     headers: {
@@ -40,6 +44,8 @@ const request = async <Response>(
     },
     body,
     method,
+    credentials: 'include',
+    mode: 'cors'
   });
 
   const payload: Response = await res.json();

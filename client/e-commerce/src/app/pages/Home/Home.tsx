@@ -11,21 +11,14 @@ export default async function Home() {
     await productCategoryApiRequest.get8ProductCategories();
   const productCategories = productCategoriesRes.payload.result;
 
-  let homepageProductsRes;
-  let homepageProducts;
-  let totalPages;
-  try {
-    homepageProductsRes = await productApiRequest.getHomepageProducts("abc");
-    homepageProducts = homepageProductsRes.payload.result.content;
-    totalPages = homepageProductsRes.payload.result.totalPages;
-  } catch (error: any) {
-    console.log("có log nghen: ", error.payload);
-  }
+  const homepageProductsRes = await productApiRequest.getHomepageProducts("1");
+  const homepageProducts = homepageProductsRes.payload.result.content;
+  const totalPages = homepageProductsRes.payload.result.totalPages;
 
   return (
-    <main className="mt-[110px] px-[160px] pb-[17px] pt-[17px] bg-[#f7fffe]">
+    <main className="mt-[110px] px-[160px] pb-[17px] pt-[17px] bg-[#f5f5f5]">
       {/* Carousel */}
-      <div className="bg-[#f7fffe]">
+      <div className="bg-[#ffffff]">
         <Carousel arrows autoplay infinite={false}>
           <div>
             <img

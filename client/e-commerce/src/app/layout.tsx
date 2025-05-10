@@ -31,11 +31,7 @@ export default function RootLayout({
           }}
           wave={{ disabled: true }}
         >
-          <AntdRegistry>
-            <Header />
-            {children}
-            <Footer />
-          </AntdRegistry>
+          <AntdRegistry>{children}</AntdRegistry>
         </ConfigProvider>
       </body>
     </html>

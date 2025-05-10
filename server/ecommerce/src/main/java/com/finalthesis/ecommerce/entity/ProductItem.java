@@ -44,8 +44,8 @@ public class ProductItem {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "product_configuration",
-            joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id")
+               joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id")
     )
     List<VariationOption> variationOptions;
 
