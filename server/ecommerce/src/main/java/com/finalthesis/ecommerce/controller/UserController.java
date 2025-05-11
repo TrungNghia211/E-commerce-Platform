@@ -16,7 +16,6 @@ import lombok.experimental.FieldDefaults;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@CrossOrigin
 public class UserController {
 
     UserService userService;
