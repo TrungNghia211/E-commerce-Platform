@@ -18,7 +18,7 @@ export default function LoginForm() {
     setIsSubmitting(true);
     try {
       const res = await userApiRequest.login(values);
-      console.log("Login: ", res);
+      await userApiRequest.auth({ sessionToken: res.payload.result.token });
       router.push("/");
     } catch (error) {
       if (error instanceof HttpError) {

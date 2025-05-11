@@ -1,5 +1,3 @@
-import { log } from "console";
-
 type CustomOptions = Omit<RequestInit, "method"> & {
   baseUrl?: string | undefined;
 };
@@ -34,8 +32,6 @@ const request = async <Response>(
     ? `${baseUrl}${url}`
     : `${baseUrl}/${url}`;
 
-  console.log("options: ", options);
-
   const res = await fetch(fullUrl, {
     ...options,
     headers: {
@@ -44,8 +40,6 @@ const request = async <Response>(
     },
     body,
     method,
-    credentials: 'include',
-    mode: 'cors'
   });
 
   const payload: Response = await res.json();
@@ -55,9 +49,7 @@ const request = async <Response>(
     payload,
   };
 
-  if (!res.ok) {
-    throw new HttpError(data);
-  }
+  if (!res.ok) throw new HttpError(data);
 
   return data;
 };
