@@ -60,6 +60,9 @@ VALUES (8, "Sức Khoẻ", "suc-khoe", "https://down-vn.img.susercontent.com/fil
 INSERT INTO variation (id, name, product_id)
 VALUES (1, "Size", 11);
 
+INSERT INTO variation (id, name, product_id)
+VALUES (2, "Màu sắc", 11);
+
 -- ======================= VARIATION_OPTION =======================
 
 INSERT INTO variation_option (id, value, variation_id)
@@ -70,6 +73,12 @@ VALUES (1, "XS", 1),
 	   (5, "XL", 1),
 	   (6, "XXL", 1),
 	   (7, "3XL", 1);
+       
+INSERT INTO variation_option (id, value, variation_id)
+VALUES (8, "Xanh", 2),
+	   (9, "Đỏ", 2),
+	   (10, "Tím", 2),
+	   (11, "Vàngdatabasechangeloglockdatabasechangeloglock", 2);
 
 -- ======================= PRODUCT_CONFIGURATION =======================
 

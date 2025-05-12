@@ -20,21 +20,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
+    // Phân biệt hoa thường
+    @Column(unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
     String password;
 
     String fullName;
 
+//    @Column(unique = true)
     String email;
 
+//    @Column(unique = true)
     String phone;
 
     LocalDateTime createdAt;
 
     LocalDateTime updatedAt;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
