@@ -55,6 +55,12 @@ INSERT INTO product_category (id, name, slug, thumbnail)
 VALUES (8, "Sức Khoẻ", "suc-khoe", "https://down-vn.img.susercontent.com/file/49119e891a44fa135f5f6f5fd4cfc747@resize_w640_nl.webp"),
 	   (9, "Mẹ & Bé", "me-va-be", "https://down-vn.img.susercontent.com/file/099edde1ab31df35bc255912bab54a5e@resize_w640_nl.webp");
        
+INSERT INTO ecommerce.product_category (id, name, parent_category_id, slug, thumbnail, visible)
+VALUES (7, "Áo thun", 2, "ao-thun", "http://res.cloudinary.com/dm1ozebjy/image/upload/d85445c9-3024-4e92-a3b1-8b8b67e4bc06_mgm.jpg", 1),
+	   (8, "Quần Jeans", 2, "quan-jeans", "http://res.cloudinary.com/dm1ozebjy/image/upload/d85445c9-3024-4e92-a3b1-8b8b67e4bc06_mgm.jpg", 1);
+ 
+INSERT INTO ecommerce.product_category (id, name, slug, thumbnail, visible)
+VALUES (9, "Mẹ & Bé", "me-va-be", "https://down-vn.img.susercontent.com/file/099edde1ab31df35bc255912bab54a5e@resize_w640_nl.webp");
 -- ======================= VARIATION =======================
 
 INSERT INTO variation (id, name, product_id)

@@ -22,7 +22,7 @@ import lombok.experimental.NonFinal;
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ApplicationInitConfig {
+public class ApplicationInitConfiguration {
 
     PasswordEncoder passwordEncoder;
 

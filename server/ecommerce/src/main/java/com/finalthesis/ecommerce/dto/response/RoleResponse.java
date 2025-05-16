@@ -1,7 +1,5 @@
 package com.finalthesis.ecommerce.dto.response;
 
-import java.util.Set;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,5 +14,6 @@ public class RoleResponse {
 
     String description;
 
-    Set<PermissionResponse> permissions;
+    //    Set<PermissionResponse> permissions;
+
 }

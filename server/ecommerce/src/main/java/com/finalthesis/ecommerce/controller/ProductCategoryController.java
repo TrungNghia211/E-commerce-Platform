@@ -2,10 +2,9 @@ package com.finalthesis.ecommerce.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.finalthesis.ecommerce.dto.request.ProductCategoryCreationRequest;
 import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.dto.response.ProductCategoryResponse;
 import com.finalthesis.ecommerce.service.ProductCategoryService;
@@ -19,13 +18,26 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCategoryController {
-
     ProductCategoryService productCategoryService;
 
     @GetMapping
-    ApiResponse<List<ProductCategoryResponse>> getAll() {
+    ApiResponse<List<ProductCategoryResponse>> findTop8ProductCategoryByOrderByCreatedAtDesc() {
         return ApiResponse.<List<ProductCategoryResponse>>builder()
-                .result(productCategoryService.findAll())
+                .result(productCategoryService.findTop8ByOrderByCreatedAtDesc())
+                .build();
+    }
+
+    @PostMapping
+    ApiResponse<ProductCategoryResponse> createProductCategory(@ModelAttribute ProductCategoryCreationRequest request) {
+        return ApiResponse.<ProductCategoryResponse>builder()
+                .result(productCategoryService.createProductCategory(request))
+                .build();
+    }
+
+    @GetMapping("/all")
+    ApiResponse<List<ProductCategoryResponse>> getAllHierarchicalCategories() {
+        return ApiResponse.<List<ProductCategoryResponse>>builder()
+                .result(productCategoryService.getAllHierarchicalCategories())
                 .build();
     }
 }

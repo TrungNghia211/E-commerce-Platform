@@ -19,7 +19,10 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1006, "User is not existed", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
-    ROLE_NOT_FOUND(1009, "Role is not found", HttpStatus.NOT_FOUND);
+    ROLE_NOT_FOUND(1009, "Role is not found", HttpStatus.NOT_FOUND),
+    PRODUCT_CATEGORY_NAME_EXISTED(1010, "Product category name existed", HttpStatus.BAD_REQUEST),
+    SLUG_EXISTED(1011, "Slug existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_CATEGORY_NOT_FOUND(1012, "Product Category is not found", HttpStatus.NOT_FOUND);
 
     int code;
     String message;

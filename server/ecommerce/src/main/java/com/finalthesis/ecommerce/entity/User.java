@@ -28,10 +28,10 @@ public class User {
 
     String fullName;
 
-//    @Column(unique = true)
+    @Column(unique = true)
     String email;
 
-//    @Column(unique = true)
+    @Column(unique = true)
     String phone;
 
     LocalDateTime createdAt;

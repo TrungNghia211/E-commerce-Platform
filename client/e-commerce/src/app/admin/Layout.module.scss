@@ -1,0 +1,10 @@
+.container {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 56px 1fr;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: var(--admin-menu-width) auto;
+}

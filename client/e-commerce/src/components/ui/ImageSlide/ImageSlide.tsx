@@ -1,11 +1,11 @@
 "use client";
 
+import { Image } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./ImageSlide.module.scss";
-import { Image } from "antd";
 
 const cx = classNames.bind(styles);
 

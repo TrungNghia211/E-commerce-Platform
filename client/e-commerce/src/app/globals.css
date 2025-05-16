@@ -4,6 +4,8 @@
 :root {
   --background: #ffffff;
   --foreground: #333;
+
+  --admin-menu-width: 256px;
 }
 
 @theme inline {

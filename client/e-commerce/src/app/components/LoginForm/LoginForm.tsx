@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 
 import { Button, Form, Input } from "antd";
 
+import { useState } from "react";
+
 import userApiRequest from "@/apiRequests/user";
 import { HttpError } from "@/lib/http";
-import { LoginValues } from "@/types/types";
-import { useState } from "react";
+import { LoginValues, Role } from "@/types/types";
 
 export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +20,10 @@ export default function LoginForm() {
     try {
       const res = await userApiRequest.login(values);
       await userApiRequest.auth({ sessionToken: res.payload.result.token });
-      router.push("/");
+      const isAdmin = res.payload.result.roles.some(
+        (role: Role) => role.name === "ADMIN"
+      );
+      isAdmin ? router.push("/admin") : router.push("/");
     } catch (error) {
       if (error instanceof HttpError) {
         form.setFields([

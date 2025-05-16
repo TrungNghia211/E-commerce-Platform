@@ -3,19 +3,22 @@ package com.finalthesis.ecommerce.service.impl;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.finalthesis.ecommerce.dto.request.AuthenticationRequest;
 import com.finalthesis.ecommerce.dto.response.AuthenticationResponse;
+import com.finalthesis.ecommerce.dto.response.RoleResponse;
 import com.finalthesis.ecommerce.entity.User;
 import com.finalthesis.ecommerce.exception.AppException;
 import com.finalthesis.ecommerce.exception.ErrorCode;
+import com.finalthesis.ecommerce.mapper.RoleMapper;
 import com.finalthesis.ecommerce.repository.UserRepository;
 import com.finalthesis.ecommerce.service.AuthenticationService;
 import com.nimbusds.jose.*;
@@ -36,14 +39,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     UserRepository userRepository;
 
+    PasswordEncoder passwordEncoder;
+
+    RoleMapper roleMapper;
+
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
     @Override
     public AuthenticationResponse isAuthenticated(AuthenticationRequest authenticationRequest) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
         var user = userRepository
                 .findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -54,9 +59,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String token = generateToken(user);
 
+        Set<RoleResponse> roleResponses =
+                user.getRoles().stream().map(roleMapper::toRoleResponse).collect(Collectors.toSet());
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .isAuthenticated(true)
+                .roles(roleResponses)
                 .build();
     }
 

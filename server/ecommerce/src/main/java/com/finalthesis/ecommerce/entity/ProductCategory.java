@@ -2,6 +2,7 @@ package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,8 +24,8 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "parent_category_id")
-    Integer parentCategoryId;
+    //    @Column(name = "parent_category_id")
+    //    Integer parentCategoryId;
 
     @Column(nullable = false)
     String name;
@@ -32,10 +33,12 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     String slug;
 
-    @Column(columnDefinition = "TEXT")
-    String description;
+    //    @Column(columnDefinition = "TEXT")
+    //    String description;
 
     String thumbnail;
+
+    boolean visible;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -47,10 +50,10 @@ public class ProductCategory {
     @OneToMany(mappedBy = "category")
     List<Product> products;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_category_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id", referencedColumnName = "id")
     ProductCategory parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
-    List<ProductCategory> subCategories;
+    Set<ProductCategory> subCategories;
 }
