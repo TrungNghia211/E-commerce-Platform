@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect } from "react";
 
 import { clientSessionToken } from "@/lib/http";
 
@@ -11,10 +11,10 @@ export default function AppProvider({
   children: React.ReactNode;
   initialSessionToken?: string;
 }) {
-  useState(() => {
+  useLayoutEffect(() => {
     if (typeof window !== "undefined")
       clientSessionToken.value = initialSessionToken;
-  });
+  }, [initialSessionToken]);
 
   return <>{children}</>;
 }

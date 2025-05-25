@@ -8,7 +8,6 @@ import com.finalthesis.ecommerce.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-
     User toUser(UserCreationRequest request);
 
     UserResponse toUserResponse(User user);

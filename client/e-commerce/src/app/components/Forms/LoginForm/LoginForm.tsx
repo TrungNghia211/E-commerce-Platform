@@ -7,7 +7,7 @@ import { Button, Form, Input } from "antd";
 import { useState } from "react";
 
 import userApiRequest from "@/apiRequests/user";
-import { HttpError } from "@/lib/http";
+import { clientSessionToken, HttpError } from "@/lib/http";
 import { LoginValues, Role } from "@/types/types";
 
 export default function LoginForm() {
@@ -20,10 +20,11 @@ export default function LoginForm() {
     try {
       const res = await userApiRequest.login(values);
       await userApiRequest.auth({ sessionToken: res.payload.result.token });
+      clientSessionToken.value = res.payload.result.token;
       const isAdmin = res.payload.result.roles.some(
         (role: Role) => role.name === "ADMIN"
       );
-      isAdmin ? router.push("/admin") : router.push("/");
+      isAdmin ? router.push("/admin/category") : router.push("/");
     } catch (error) {
       if (error instanceof HttpError) {
         form.setFields([

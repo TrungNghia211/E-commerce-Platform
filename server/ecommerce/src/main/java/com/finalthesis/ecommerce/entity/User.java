@@ -20,7 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    // Phân biệt hoa thường
+    // Case Sensitive
     @Column(unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
@@ -38,10 +38,22 @@ public class User {
 
     LocalDateTime updatedAt;
 
+    @Column(
+            columnDefinition =
+                    "varchar(255) default 'https://res.cloudinary.com/dm1ozebjy/image/upload/v1747726753/anonymousUser_ilohpg.jpg'")
+    String avatar;
+
+    String citizenIdFrontImage;
+
+    String citizenIdBackImage;
+
     @ManyToMany
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_name", referencedColumnName = "name"))
     Set<Role> roles;
+
+    @OneToOne(mappedBy = "user")
+    Shop shop;
 }

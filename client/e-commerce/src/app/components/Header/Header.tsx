@@ -1,22 +1,67 @@
+"use client";
+
 import {
   BellOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 import classNames from "classnames/bind";
 
 import styles from "./Header.module.scss";
 
 const cx = classNames.bind(styles);
 
+interface JWTPayload {
+  iss: string;
+  sub: string;
+  exp: number;
+  iat: number;
+  scope: string;
+}
+
 function Header() {
+  const router = useRouter();
+
+  // const handleSellerClick = (e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   const token = Cookies.get('token');
+
+  //   if (!token) {
+  //     router.push('/login');
+  //     return;
+  //   }
+
+  //   try {
+  //     const decoded = jwtDecode<JWTPayload>(token);
+      
+  //     // Kiểm tra token hết hạn
+  //     if (decoded.exp * 1000 < Date.now()) {
+  //       router.push('/login');
+  //       return;
+  //     }
+
+  //     // Kiểm tra role và chuyển hướng
+  //     if (decoded.scope === 'SELLER') {
+  //       router.push('/seller');
+  //     } else {
+  //       router.push('/create-shop');
+  //     }
+  //   } catch (error) {
+  //     // Nếu token không hợp lệ, chuyển đến trang login
+  //     router.push('/login');
+  //   }
+  // };
+
   return (
     <>
       <header className={cx("header")}>
         <nav className={cx("topDivWrapper")}>
           <div className="pt-[4px] pb-[4px] hover:text-[#cbd4dd] hover:cursor-pointer">
-            <a href="">Kênh người bán</a>
+            <Link href="/shop">Kênh người bán</Link>
           </div>
 
           <ul className={cx("ulWrapper")}>

@@ -50,7 +50,7 @@ public class ProductCategory {
     @OneToMany(mappedBy = "category")
     List<Product> products;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id", referencedColumnName = "id")
     ProductCategory parentCategory;
 

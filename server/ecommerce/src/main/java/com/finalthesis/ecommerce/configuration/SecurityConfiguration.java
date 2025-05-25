@@ -30,11 +30,11 @@ public class SecurityConfiguration {
 
     private final String[] PUBLIC_ENDPOINTS_1 = {
         "/users", // Register account
-        "/auth/token",
-        "/categories" // Login
+        "/auth/token", // Login
+        "/categories"
     };
 
-    private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products", "/categories/all"};
+    private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products"};
 
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
