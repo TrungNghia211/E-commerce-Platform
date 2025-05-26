@@ -17,4 +17,9 @@
         <dropColumn tableName="user" columnName="avatar"/>
     </changeSet>
 
+    <changeSet id="3" author="Nghia Trung Nguyen">
+        <dropForeignKeyConstraint baseTableName="shop" constraintName="FKj97brjwss3mlgdt7t213tkchl"/>
+        <dropColumn tableName="shop" columnName="user_id"/>
+    </changeSet>
+
 </databaseChangeLog>

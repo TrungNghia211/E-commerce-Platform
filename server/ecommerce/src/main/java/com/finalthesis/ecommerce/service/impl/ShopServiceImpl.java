@@ -4,31 +4,31 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import com.finalthesis.ecommerce.constant.PredefinedRole;
-import com.finalthesis.ecommerce.repository.RoleRepository;
-import com.finalthesis.ecommerce.repository.address.DistrictRepository;
-import com.finalthesis.ecommerce.repository.address.ProvinceRepository;
-import com.finalthesis.ecommerce.repository.address.WardRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.finalthesis.ecommerce.constant.PredefinedRole;
 import com.finalthesis.ecommerce.dto.request.ShopCreationRequest;
 import com.finalthesis.ecommerce.dto.response.ShopResponse;
 import com.finalthesis.ecommerce.entity.*;
 import com.finalthesis.ecommerce.exception.AppException;
 import com.finalthesis.ecommerce.exception.ErrorCode;
 import com.finalthesis.ecommerce.mapper.ShopMapper;
-import com.finalthesis.ecommerce.repository.address.AddressRepository;
+import com.finalthesis.ecommerce.repository.RoleRepository;
 import com.finalthesis.ecommerce.repository.ShopRepository;
 import com.finalthesis.ecommerce.repository.UserRepository;
+import com.finalthesis.ecommerce.repository.address.AddressRepository;
+import com.finalthesis.ecommerce.repository.address.DistrictRepository;
+import com.finalthesis.ecommerce.repository.address.ProvinceRepository;
+import com.finalthesis.ecommerce.repository.address.WardRepository;
 import com.finalthesis.ecommerce.service.CloudinaryService;
 import com.finalthesis.ecommerce.service.ShopService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -116,8 +116,10 @@ public class ShopServiceImpl implements ShopService {
             Shop shop = shopMapper.toShop(request);
             shop.setId(request.getId());
             shop.setAddress(addressRepository.save(address));
-            shop.setUser(userRepository.save(user));
             result = shopRepository.save(shop);
+
+            user.setShop(result);
+            userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
             throw new AppException(ErrorCode.SHOP_NAME_EXISTED);
         }

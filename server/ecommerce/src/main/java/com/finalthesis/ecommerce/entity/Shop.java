@@ -43,7 +43,6 @@ public class Shop {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     Address address;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "shop")
     User user;
 }
