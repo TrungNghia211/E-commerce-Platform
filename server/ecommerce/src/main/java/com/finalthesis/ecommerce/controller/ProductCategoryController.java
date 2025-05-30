@@ -37,7 +37,7 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     ApiResponse<List<ProductCategoryResponse>> getAllHierarchicalCategories() {
         return ApiResponse.<List<ProductCategoryResponse>>builder()
                 .result(productCategoryService.getAllHierarchicalCategories())

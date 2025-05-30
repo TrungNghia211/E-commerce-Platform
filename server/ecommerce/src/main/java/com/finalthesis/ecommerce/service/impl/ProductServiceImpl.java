@@ -62,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
-        // Validate input and get related entities
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user =
                 userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -71,26 +70,22 @@ public class ProductServiceImpl implements ProductService {
                 .findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND));
 
-        // Get the shop from the current user
         Shop shop = user.getShop();
 
-        // Create Product entity
         Product product = productMapper.toProduct(request);
         product.setCategory(category);
         product.setShop(shop);
 
-        // Handle thumbnail upload for the product
         MultipartFile productThumbnailFile = request.getThumbnail();
-        if (productThumbnailFile != null && !productThumbnailFile.isEmpty()) {
+        if (productThumbnailFile != null && !productThumbnailFile.isEmpty())
             try {
                 String thumbnailUrl = cloudinaryService.uploadFile(productThumbnailFile);
                 product.setThumbnail(thumbnailUrl);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload product thumbnail", e);
             }
-        }
 
-        // 3. Create and link Variations and VariationOptions
+        // Create and link Variations and VariationOptions
         List<Variation> variations = new ArrayList<>();
         if (request.getVariations() != null) {
             for (VariationCreationRequest variationDTO : request.getVariations()) {
@@ -111,7 +106,6 @@ public class ProductServiceImpl implements ProductService {
         }
         product.setVariations(variations);
 
-        // Save Product and its Variations/Options first to get generated IDs
         Product savedProduct = productRepository.save(product);
 
         // Create and link ProductItems
@@ -141,13 +135,12 @@ public class ProductServiceImpl implements ProductService {
                 }
                 productItem.setVariationOptions(itemOptions);
 
-                // Handle item thumbnail upload
                 MultipartFile itemThumbnailFile = itemDTO.getThumbnailFiles();
                 if (itemThumbnailFile != null && !itemThumbnailFile.isEmpty()) {
                     try {
                         String itemThumbnailUrl = cloudinaryService.uploadFile(itemThumbnailFile);
                         productItem.setThumbnail(itemThumbnailUrl);
-                    } catch (Exception e) { // Revert to original catch
+                    } catch (Exception e) {
                         throw new RuntimeException("Failed to upload product item thumbnail", e);
                     }
                 }
@@ -163,10 +156,8 @@ public class ProductServiceImpl implements ProductService {
         // Save ProductItems (assuming cascade is not configured from Product to ProductItem)
         productItemRepository.saveAll(productItems);
 
-        // Re-save product to update quantityInStock
         productRepository.save(savedProduct);
 
-        // Map the saved Product entity back to Response DTO
         return productMapper.toProductResponse(savedProduct);
     }
 

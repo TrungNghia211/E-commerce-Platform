@@ -1,5 +1,5 @@
-import SellerMenu from "@/components/ui/SellerMenu/SellerMenu";
 import SellerHeader from "@/components/ui/SellerHeader/SellerHeader";
+import SellerMenu from "@/components/ui/SellerMenu/SellerMenu";
 
 export default function SellerLayout({
   children,
