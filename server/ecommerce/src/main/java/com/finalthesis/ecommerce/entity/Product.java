@@ -28,8 +28,24 @@ public class Product {
     @Column(nullable = false, unique = true)
     String slug;
 
+    @Column(columnDefinition = "integer default 0")
+    Integer quantityInStock;
+
+    @Column(nullable = false)
+    Double price;
+
+    Integer buyTurn;
+
     @Column(columnDefinition = "TEXT")
     String description;
+
+    Double weight;
+
+    Integer length;
+
+    Integer width;
+
+    Integer height;
 
     String thumbnail;
 
@@ -43,13 +59,17 @@ public class Product {
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     ProductCategory category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     List<ProductItem> productItems;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     List<Variation> variations;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id", referencedColumnName = "id")
+    Shop shop;
 }

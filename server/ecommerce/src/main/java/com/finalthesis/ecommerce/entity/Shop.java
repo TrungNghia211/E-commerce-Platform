@@ -1,6 +1,7 @@
 package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -45,4 +46,7 @@ public class Shop {
 
     @OneToOne(mappedBy = "shop")
     User user;
+
+    @OneToMany(mappedBy = "shop")
+    Set<Product> products;
 }

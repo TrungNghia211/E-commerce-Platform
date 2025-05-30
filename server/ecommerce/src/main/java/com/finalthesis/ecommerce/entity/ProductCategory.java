@@ -19,22 +19,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCategory {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-
-    //    @Column(name = "parent_category_id")
-    //    Integer parentCategoryId;
 
     @Column(nullable = false)
     String name;
 
     @Column(nullable = false, unique = true)
     String slug;
-
-    //    @Column(columnDefinition = "TEXT")
-    //    String description;
 
     String thumbnail;
 

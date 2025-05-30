@@ -14,17 +14,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VariationOption {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "variation_id", nullable = false)
-    Variation variation;
-
     @Column(nullable = false)
     String value;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variation_id", referencedColumnName = "id")
+    Variation variation;
 
     @ManyToMany(mappedBy = "variationOptions")
     List<ProductItem> productItems;

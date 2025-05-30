@@ -24,7 +24,8 @@ public enum ErrorCode {
     SLUG_EXISTED(1011, "Slug existed", HttpStatus.BAD_REQUEST),
     PRODUCT_CATEGORY_NOT_FOUND(1012, "Product Category is not found", HttpStatus.NOT_FOUND),
     FILE_UPLOAD_FAILED(1013, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
-    SHOP_NAME_EXISTED(1014, "Shop name existed", HttpStatus.BAD_REQUEST);
+    SHOP_NAME_EXISTED(1014, "Shop name existed", HttpStatus.BAD_REQUEST),
+    VARIATION_OPTION_NOT_FOUND(1015, "Variation option not found", HttpStatus.NOT_FOUND);
 
     int code;
     String message;

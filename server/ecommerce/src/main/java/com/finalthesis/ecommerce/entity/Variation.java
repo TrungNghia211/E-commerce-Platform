@@ -20,22 +20,22 @@ import lombok.experimental.FieldDefaults;
 public class Variation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    Integer id;
 
     @Column(nullable = false)
-    private String name;
+    String name;
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "variation")
-    private List<VariationOption> variationOptions;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    Product product;
+
+    @OneToMany(mappedBy = "variation", cascade = CascadeType.ALL)
+    List<VariationOption> variationOptions;
 }

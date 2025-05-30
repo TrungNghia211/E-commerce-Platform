@@ -19,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
                     + "GROUP BY p.id, p.thumbnail, p.name, p.purchase_count",
             nativeQuery = true)
     Page<HomepageProductResponse> getHomepageProducts(Pageable pageable);
+
+    Page<Product> findByShop_User_Username(String username, Pageable pageable);
 }

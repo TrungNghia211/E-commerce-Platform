@@ -31,7 +31,8 @@ public class SecurityConfiguration {
     private final String[] PUBLIC_ENDPOINTS_1 = {
         "/users", // Register account
         "/auth/token", // Login
-        "/categories"
+        "/categories",
+        "/products",
     };
 
     private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products"};

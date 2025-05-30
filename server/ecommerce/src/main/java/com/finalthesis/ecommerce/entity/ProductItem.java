@@ -23,23 +23,25 @@ public class ProductItem {
     Integer id;
 
     @Column(name = "SKU", nullable = false, unique = true)
-    private String sku;
+    String sku;
 
     @Column(columnDefinition = "integer default 0")
-    private Integer quantityInStock;
+    Integer quantityInStock;
 
     @Column(nullable = false)
-    private Double price;
+    Double price;
+
+    String thumbnail;
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     Product product;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
