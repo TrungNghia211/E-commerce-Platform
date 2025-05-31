@@ -35,10 +35,6 @@ export default function HomepageProducts({
     }
   };
 
-  // useEffect(() => {
-  //   loadProducts(currentPage);
-  // }, [currentPage]);
-
   return (
     <>
       <p className="flex justify-center text-[30px] font-semibold">

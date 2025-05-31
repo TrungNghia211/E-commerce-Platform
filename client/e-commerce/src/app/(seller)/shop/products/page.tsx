@@ -35,6 +35,19 @@ export default function ProductManagementPage() {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
+      render: (text: string) => (
+        <div
+          style={{
+            maxWidth: "140px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+          title={text}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: "Thumbnail",
@@ -93,6 +106,7 @@ export default function ProductManagementPage() {
   return (
     <div>
       <Title level={2}>Quản lý Sản phẩm</Title>
+
       <Table
         columns={columns}
         dataSource={products}
@@ -100,6 +114,7 @@ export default function ProductManagementPage() {
         loading={loading}
         pagination={false}
       />
+
       <Pagination
         current={currentPage}
         pageSize={pageSize}

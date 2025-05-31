@@ -20,7 +20,7 @@ interface Page<T> {
 
 const productApiRequest = {
   getHomepageProducts: (pageNumber: number) =>
-    http.get<any>(`/products?pageNumber=${pageNumber}&pageSize=3`),
+    http.get<any>(`/products?pageNumber=${pageNumber}&pageSize=18`),
 
   createProduct: (formData: FormData) =>
     http.post<ProductResponse>("/products", formData),

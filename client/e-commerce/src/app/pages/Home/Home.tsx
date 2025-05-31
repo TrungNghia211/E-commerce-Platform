@@ -11,7 +11,7 @@ export default async function Home() {
     await productCategoryApiRequest.get8ProductCategories();
   const productCategories = productCategoriesRes.payload.result;
 
-  const homepageProductsRes = await productApiRequest.getHomepageProducts("1");
+  const homepageProductsRes = await productApiRequest.getHomepageProducts(1);
   const homepageProducts = homepageProductsRes.payload.result.content;
   const totalPages = homepageProductsRes.payload.result.totalPages;
 
