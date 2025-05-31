@@ -81,6 +81,9 @@ export default function SellerMenu() {
       case "addProduct":
         router.push("/shop/products/add");
         break;
+      case "productList":
+        router.push("/shop/products");
+        break;
       default:
         break;
     }

@@ -40,4 +40,6 @@ public class ProductResponse {
     LocalDateTime createdAt;
 
     LocalDateTime updatedAt;
+
+    String categoryName;
 }

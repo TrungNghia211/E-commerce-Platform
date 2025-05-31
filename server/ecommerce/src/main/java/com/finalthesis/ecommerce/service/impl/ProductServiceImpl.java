@@ -166,6 +166,11 @@ public class ProductServiceImpl implements ProductService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Product> productsPage = productRepository.findByShop_User_Username(username, pageable);
-        return productsPage.map(productMapper::toProductResponse);
+        return productsPage.map(product -> {
+            ProductResponse dto = productMapper.toProductResponse(product);
+            if (product.getCategory() != null)
+                dto.setCategoryName(product.getCategory().getName());
+            return dto;
+        });
     }
 }
