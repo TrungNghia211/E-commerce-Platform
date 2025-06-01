@@ -25,6 +25,8 @@ public class Shop {
 
     String phone;
 
+    String avatar;
+
     @Column(columnDefinition = "TEXT")
     String description;
 

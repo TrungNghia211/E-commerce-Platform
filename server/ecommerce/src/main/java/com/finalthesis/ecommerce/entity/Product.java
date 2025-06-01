@@ -1,7 +1,8 @@
 package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -64,10 +65,10 @@ public class Product {
     ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
-    List<ProductItem> productItems;
+    Set<ProductItem> productItems = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    List<Variation> variations;
+    Set<Variation> variations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", referencedColumnName = "id")

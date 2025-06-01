@@ -1,7 +1,8 @@
 package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -49,5 +50,5 @@ public class ProductItem {
             name = "product_configuration",
             joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id"))
-    List<VariationOption> variationOptions;
+    Set<VariationOption> variationOptions = new HashSet<>();
 }

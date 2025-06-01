@@ -1,7 +1,7 @@
 package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -37,5 +37,5 @@ public class Variation {
     Product product;
 
     @OneToMany(mappedBy = "variation", cascade = CascadeType.ALL)
-    List<VariationOption> variationOptions;
+    Set<VariationOption> variationOptions;
 }

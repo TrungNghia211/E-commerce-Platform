@@ -2,8 +2,6 @@ import { Card } from "antd";
 import Link from "next/link";
 
 function ItemCard({ product }: { product: any }) {
-  console.log("product: ", product);
-
   return (
     <Link href={`/products/${product.id}`}>
       <Card

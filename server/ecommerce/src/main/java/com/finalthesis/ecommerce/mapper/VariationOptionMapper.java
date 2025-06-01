@@ -12,4 +12,6 @@ public interface VariationOptionMapper {
     @Mapping(target = "variation", ignore = true) // Set in service
     @Mapping(target = "productItems", ignore = true) // Handled in ProductItem mapping
     VariationOption toVariationOption(VariationOptionRequest request);
+
+    //    VariationOptionResponse toVariationOptionResponse(VariationOption variationOption);
 }

@@ -1,7 +1,7 @@
 package com.finalthesis.ecommerce.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +17,7 @@ import com.finalthesis.ecommerce.dto.request.product.VariationCreationRequest;
 import com.finalthesis.ecommerce.dto.request.product.VariationOptionRequest;
 import com.finalthesis.ecommerce.dto.response.HomepageProductResponse;
 import com.finalthesis.ecommerce.dto.response.ProductResponse;
+import com.finalthesis.ecommerce.dto.response.productdetail.ProductDetailResponse;
 import com.finalthesis.ecommerce.entity.*;
 import com.finalthesis.ecommerce.exception.AppException;
 import com.finalthesis.ecommerce.exception.ErrorCode;
@@ -30,6 +31,7 @@ import com.finalthesis.ecommerce.repository.ProductRepository;
 import com.finalthesis.ecommerce.repository.UserRepository;
 import com.finalthesis.ecommerce.service.CloudinaryService;
 import com.finalthesis.ecommerce.service.ProductService;
+import com.finalthesis.ecommerce.utils.ProductMapperManual;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -86,13 +88,13 @@ public class ProductServiceImpl implements ProductService {
             }
 
         // Create and link Variations and VariationOptions
-        List<Variation> variations = new ArrayList<>();
+        Set<Variation> variations = new HashSet<>();
         if (request.getVariations() != null) {
             for (VariationCreationRequest variationDTO : request.getVariations()) {
                 Variation variation = variationMapper.toVariation(variationDTO);
                 variation.setProduct(product);
 
-                List<VariationOption> options = new ArrayList<>();
+                Set<VariationOption> options = new HashSet<>();
                 if (variationDTO.getOptions() != null) {
                     for (VariationOptionRequest optionDTO : variationDTO.getOptions()) {
                         VariationOption option = variationOptionMapper.toVariationOption(optionDTO);
@@ -109,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
         // Create and link ProductItems
-        List<ProductItem> productItems = new ArrayList<>();
+        Set<ProductItem> productItems = new HashSet<>();
         int totalQuantity = 0;
 
         if (request.getProductItems() != null) {
@@ -118,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
                 productItem.setProduct(savedProduct);
 
                 // Link VariationOptions to ProductItem based on values
-                List<VariationOption> itemOptions = new ArrayList<>();
+                Set<VariationOption> itemOptions = new HashSet<>();
                 if (itemDTO.getVariationOptionValues() != null) {
                     for (String optionValue : itemDTO.getVariationOptionValues()) {
                         // Find the VariationOption by value and linked to one of the product's variations
@@ -172,5 +174,13 @@ public class ProductServiceImpl implements ProductService {
                 dto.setCategoryName(product.getCategory().getName());
             return dto;
         });
+    }
+
+    @Override
+    public ProductDetailResponse getProductDetailById(Integer productId) {
+        Product product = productRepository
+                .findWithAllDetailsById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return ProductMapperManual.toProductDetailResponse(product);
     }
 }

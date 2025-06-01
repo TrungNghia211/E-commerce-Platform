@@ -29,6 +29,9 @@ const productApiRequest = {
     http.get<ApiResponse<Page<ProductResponse>>>(
       `/products/seller?pageNumber=${pageNumber}&pageSize=${pageSize}`
     ),
+
+  getProductDetail: (productId: number) =>
+    http.get<any>(`/products/${productId}`),
 };
 
 export default productApiRequest;

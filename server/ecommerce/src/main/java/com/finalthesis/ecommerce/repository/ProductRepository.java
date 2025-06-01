@@ -1,7 +1,10 @@
 package com.finalthesis.ecommerce.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +24,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<HomepageProductResponse> getHomepageProducts(Pageable pageable);
 
     Page<Product> findByShop_User_Username(String username, Pageable pageable);
+
+    @EntityGraph(
+            attributePaths = {
+                "category",
+                "shop",
+                "productItems",
+                "productItems.variationOptions",
+                "variations",
+                "variations.variationOptions"
+            })
+    Optional<Product> findWithAllDetailsById(Integer id);
 }

@@ -35,7 +35,7 @@ public class SecurityConfiguration {
         "/products",
     };
 
-    private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products"};
+    private final String[] PUBLIC_ENDPOINTS_2 = {"/categories", "/products/**"};
 
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;

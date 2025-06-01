@@ -12,6 +12,7 @@ import com.finalthesis.ecommerce.dto.request.product.ProductCreationRequest;
 import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.dto.response.HomepageProductResponse;
 import com.finalthesis.ecommerce.dto.response.ProductResponse;
+import com.finalthesis.ecommerce.dto.response.productdetail.ProductDetailResponse;
 import com.finalthesis.ecommerce.service.ProductService;
 
 import lombok.AccessLevel;
@@ -58,5 +59,11 @@ public class ProductController {
         return ApiResponse.<Page<ProductResponse>>builder()
                 .result(productService.getSellerProducts(pageNumber, pageSize))
                 .build();
+    }
+
+    @GetMapping("/{id}")
+    ApiResponse<ProductDetailResponse> getProductDetailById(@PathVariable Integer id) {
+        ProductDetailResponse product = productService.getProductDetailById(id);
+        return ApiResponse.<ProductDetailResponse>builder().result(product).build();
     }
 }

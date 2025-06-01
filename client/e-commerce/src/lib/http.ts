@@ -44,8 +44,6 @@ const request = async <Response>(
       : "",
   };
 
-  console.log("Kiểm tra: ", baseHeaders.Authorization);
-
   const body =
     options?.body instanceof FormData
       ? options.body

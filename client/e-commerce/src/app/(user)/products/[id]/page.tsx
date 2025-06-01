@@ -7,7 +7,7 @@ async function ProductDetailPage({
 }) {
   const { id } = await params;
 
-  return <ProductDetail />;
+  return <ProductDetail id={id} />;
 }
 
 export default ProductDetailPage;

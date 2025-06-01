@@ -14,4 +14,9 @@ public interface VariationMapper {
     @Mapping(target = "product", ignore = true)
     @Mapping(source = "options", target = "variationOptions")
     Variation toVariation(VariationCreationRequest request);
+
+    //    @Mapping(target = "variationOptions", source = "variationOptions")
+    //    VariationResponse toVariationResponse(Variation variation);
+
+    //    List<VariationResponse> toVariationResponses(List<Variation> variations);
 }

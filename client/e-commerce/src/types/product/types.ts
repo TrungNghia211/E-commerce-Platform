@@ -5,13 +5,18 @@ export interface FormVariation {
   options: string[];
 }
 
+export interface VariationOption {
+  id: number;
+  value: string;
+}
+
 export interface ProductItem {
-  id: string;
-  variationOptions: { name: string; value: string }[];
+  id: number;
+  variationOptions: VariationOption[];
   sku: string;
   price: number;
   quantityInStock: number;
-  thumbnail?: UploadFile[];
+  thumbnail?: string;
 }
 
 export interface ProductCreationRequestPayload {
@@ -49,4 +54,30 @@ export interface ProductFormValues {
   width?: number;
   height?: number;
   variations?: FormVariation[];
+}
+
+export interface ProductVariation {
+  id: number;
+  name: string;
+  variationOptions: VariationOption[];
+}
+
+export interface ShopType {
+  id: number;
+  name: string;
+}
+
+export interface ProductDetailType {
+  id: number;
+  name: string;
+  quantityInStock: number;
+  price: number;
+  buyTurn: number | null;
+  description: string;
+  thumbnail: string;
+  purchaseCount: number | null;
+  categoryName: string;
+  shop: ShopType | null;
+  productItems: ProductItem[];
+  variations: ProductVariation[];
 }

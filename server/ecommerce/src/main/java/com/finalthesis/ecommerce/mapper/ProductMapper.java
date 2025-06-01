@@ -12,15 +12,25 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "quantityInStock", ignore = true)
     @Mapping(target = "buyTurn", ignore = true) // Defaults to 0 or handled separately
-    @Mapping(target = "purchaseCount", ignore = true) // Defaults to 0
-    @Mapping(target = "createdAt", ignore = true) // Handled by @CreationTimestamp
-    @Mapping(target = "updatedAt", ignore = true) // Handled by @UpdateTimestamp
-    @Mapping(target = "category", ignore = true) // Set in service
-    @Mapping(target = "shop", ignore = true) // Set in service
+    @Mapping(target = "purchaseCount", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "shop", ignore = true)
     @Mapping(target = "productItems", ignore = true) // Mapped separately
     @Mapping(target = "variations", ignore = true) // Mapped separately
     @Mapping(target = "thumbnail", ignore = true)
     Product toProduct(ProductCreationRequest request);
 
     ProductResponse toProductResponse(Product product);
+
+    //    @Mapping(target = "categoryName", source = "category.name")
+    //    @Mapping(target = "productItems", source = "productItems")
+    //    @Mapping(target = "variations", source = "variations")
+    //    ProductDetailResponse toProductDetailResponse(Product product);
+
+    //    List<ProductItemResponse> toProductItemResponseList(List<ProductItem> items);
+
+    //    @Mapping(target = "variationOptions", source = "variationOptions")
+    //    ProductItemResponse toProductItemResponse(ProductItem item);
 }

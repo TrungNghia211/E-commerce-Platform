@@ -1,19 +1,22 @@
 import { Image } from "antd";
 
-import styles from "./ProductThumbnail.module.scss";
-import classNames from "classnames/bind";
 import ImageSlide from "@/components/ui/ImageSlide/ImageSlide";
 
-const cx = classNames.bind(styles);
-
-function ProductThumbnail() {
+function ProductThumbnail({ product }: { product: any }) {
   return (
     <div className="w-full">
       <Image
-        src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m0svi2m2tjtb5b@resize_w900_nl.webp"
+        src={product.thumbnail}
         alt=""
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          borderRadius: "10px",
+          margin: "0 auto",
+        }}
       />
-      <ImageSlide />
+      <ImageSlide productItems={product.productItems} />
     </div>
   );
 }
