@@ -51,4 +51,7 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop")
     Set<Product> products;
+
+    @OneToMany(mappedBy = "shop")
+    Set<Order> orders;
 }

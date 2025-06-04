@@ -7,15 +7,24 @@ function ItemCard({ product }: { product: any }) {
       <Card
         hoverable
         cover={
-          <img src={product.thumbnail} alt="example" width={400} height={400} />
+          <div style={{ width: "100%", height: "250px", overflow: "hidden" }}>
+            <img
+              src={product.thumbnail}
+              alt="example"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </div>
         }
       >
         <p className="truncate">{product.name}</p>
         <div className="flex justify-between mt-[10px]">
           <span>{product.price}đ</span>
           <span>
-            Đã bán:{" "}
-            {product.purchaseCount === null ? "0" : product.purchaseCount}
+            Đã bán: {product.buyTurn === null ? "0" : product.buyTurn}
           </span>
         </div>
       </Card>

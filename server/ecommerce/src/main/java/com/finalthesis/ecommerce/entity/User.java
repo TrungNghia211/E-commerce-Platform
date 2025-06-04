@@ -1,6 +1,7 @@
 package com.finalthesis.ecommerce.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -56,4 +57,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "shop_id", referencedColumnName = "id")
     Shop shop;
+
+    @OneToMany(mappedBy = "user")
+    Set<Order> orders = new HashSet<>();
 }

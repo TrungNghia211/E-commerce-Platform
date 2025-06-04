@@ -24,3 +24,12 @@ cloudinary:
   cloud-name: "dm1ozebjy"
   api-key: "779548677416465"
   api-secret: "ufoJ9hprJyLxZNZ114Mo_fexvJ0"
+
+vnpay:
+  tmn_code: "XEJOH4NW"
+  hash_secret: "VKVU4EA1YJOSBE56AIH50QQSOKY9T07P"
+  payment_url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  return_url: "http://localhost:3000/payment/vnpay-return"
+  version: "2.1.0"
+  command: "pay"
+  order_type: "other"

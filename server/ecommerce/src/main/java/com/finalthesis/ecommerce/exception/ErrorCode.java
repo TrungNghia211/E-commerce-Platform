@@ -25,7 +25,11 @@ public enum ErrorCode {
     PRODUCT_CATEGORY_NOT_FOUND(1012, "Product Category is not found", HttpStatus.NOT_FOUND),
     FILE_UPLOAD_FAILED(1013, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
     SHOP_NAME_EXISTED(1014, "Shop name existed", HttpStatus.BAD_REQUEST),
-    VARIATION_OPTION_NOT_FOUND(1015, "Variation option not found", HttpStatus.NOT_FOUND);
+    VARIATION_OPTION_NOT_FOUND(1015, "Variation option not found", HttpStatus.NOT_FOUND),
+    PRODUCT_ITEM_NOT_FOUND(1016, "Product item not found", HttpStatus.NOT_FOUND),
+    PRODUCT_NOT_FOUND(1017, "Product not found", HttpStatus.NOT_FOUND),
+    SHOP_NOT_FOUND(1018, "Shop not found", HttpStatus.NOT_FOUND),
+    ORDER_NOT_FOUND(1019, "Order not found", HttpStatus.NOT_FOUND),;
 
     int code;
     String message;

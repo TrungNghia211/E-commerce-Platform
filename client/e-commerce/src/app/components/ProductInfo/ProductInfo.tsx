@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, Typography } from "antd";
+import { useState, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { Button, Typography, InputNumber, notification } from "antd";
 import { ShoppingCartOutlined, HeartOutlined } from "@ant-design/icons";
 import classNames from "classnames/bind";
-import { useState, useCallback, useMemo } from "react";
 
 import styles from "./ProductInfo.module.scss";
 import { ProductDetailType } from "@/types/product/types";
@@ -14,12 +15,15 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
   const [selectedVariations, setSelectedVariations] = useState<{
     [key: number]: number;
   }>({});
+  const [quantity, setQuantity] = useState(1);
+  const [addToCartLoading, setAddToCartLoading] = useState(false);
+  const [buyNowLoading, setBuyNowLoading] = useState(false);
+  const router = useRouter();
 
   // Memoize selected product item để tránh tính toán lại không cần thiết
   const selectedItem = useMemo(() => {
-    if (Object.keys(selectedVariations).length === 0) {
+    if (Object.keys(selectedVariations).length === 0)
       return product.productItems[0];
-    }
 
     return (
       product.productItems.find((item) => {
@@ -55,9 +59,7 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
   // Check if an item is selected
   const isItemSelected = useCallback(
     (item: (typeof product.productItems)[0], index: number) => {
-      if (Object.keys(selectedVariations).length === 0) {
-        return index === 0;
-      }
+      if (Object.keys(selectedVariations).length === 0) return index === 0;
 
       return item.variationOptions.every((option) => {
         const variation = product.variations.find((v) =>
@@ -69,7 +71,127 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
     [selectedVariations, product.variations]
   );
 
+  // Validate quantity and stock
+  const validateQuantityAndStock = () => {
+    if (quantity <= 0) {
+      notification.error({
+        message: "Lỗi",
+        description: "Vui lòng chọn số lượng hợp lệ!",
+      });
+      return false;
+    }
+
+    if (quantity > selectedItem.quantityInStock) {
+      notification.error({
+        message: "Lỗi",
+        description: "Số lượng vượt quá tồn kho!",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const hasVariations = product.variations && product.variations.length > 0;
+
+  const handleBuyNow = () => {
+    if (!validateQuantityAndStock()) return;
+    setBuyNowLoading(true);
+
+    // Tạo thông tin sản phẩm để checkout
+    try {
+      const checkoutItem = {
+        productItemId: selectedItem.id,
+        productName: product.name,
+        thumbnail: selectedItem.thumbnail || product.thumbnail,
+        variations: hasVariations
+          ? selectedItem.variationOptions
+              .map((option) => {
+                const variation = product.variations.find((v) =>
+                  v.variationOptions.some((vo) => vo.id === option.id)
+                );
+                return `${variation?.name}: ${option.value}`;
+              })
+              .join(", ")
+          : "",
+        price: selectedItem.price,
+        quantity: quantity,
+        total: selectedItem.price * quantity,
+      };
+
+      // Chuyển đến trang checkout
+      const checkoutData = encodeURIComponent(JSON.stringify([checkoutItem]));
+      router.push(`/products/checkout?items=${checkoutData}`);
+    } catch (error) {
+      notification.error({
+        message: "Lỗi",
+        description: "Không thể chuyển đến trang thanh toán!",
+      });
+    } finally {
+      setBuyNowLoading(false);
+    }
+  };
+
+  // Xử lý thêm vào giỏ hàng
+  const handleAddToCart = async () => {
+    if (!validateQuantityAndStock()) return;
+
+    setAddToCartLoading(true);
+
+    try {
+      const cartItem = {
+        productItemId: selectedItem.id,
+        productName: product.name,
+        thumbnail: selectedItem.thumbnail || product.thumbnail,
+        variations: hasVariations
+          ? selectedItem.variationOptions
+              .map((option) => {
+                const variation = product.variations.find((v) =>
+                  v.variationOptions.some((vo) => vo.id === option.id)
+                );
+                return `${variation?.name}: ${option.value}`;
+              })
+              .join(", ")
+          : "",
+        price: selectedItem.price,
+        quantity: quantity,
+      };
+
+      // Gọi API thêm vào giỏ hàng (nếu có)
+      // await fetch('/api/cart/add', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(cartItem)
+      // });
+
+      // Tạm thời lưu vào localStorage hoặc state management
+      const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const existingItemIndex = existingCart.findIndex(
+        (item: any) => item.productItemId === cartItem.productItemId
+      );
+
+      if (existingItemIndex >= 0) {
+        existingCart[existingItemIndex].quantity += cartItem.quantity;
+      } else {
+        existingCart.push(cartItem);
+      }
+
+      localStorage.setItem("cart", JSON.stringify(existingCart));
+
+      notification.success({
+        message: "Thành công",
+        description: "Đã thêm sản phẩm vào giỏ hàng!",
+      });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      notification.error({
+        message: "Lỗi",
+        description: "Không thể thêm sản phẩm vào giỏ hàng!",
+      });
+    } finally {
+      setAddToCartLoading(false);
+    }
+  };
 
   return (
     <div className={cx("container")}>
@@ -141,16 +263,40 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
         </div>
       )}
 
+      <div className={cx("quantity-selector")} style={{ margin: "20px 0" }}>
+        <span style={{ marginRight: "10px" }}>Số lượng:</span>
+        <InputNumber
+          min={1}
+          max={selectedItem.quantityInStock}
+          value={quantity}
+          onChange={(value) => setQuantity(value || 1)}
+          style={{ width: "120px" }}
+        />
+        <span style={{ marginLeft: "10px", color: "#999" }}>
+          {selectedItem.quantityInStock} sản phẩm có sẵn
+        </span>
+      </div>
+
       <div className={cx("product-actions")}>
         <Button
           size="large"
           className={cx("add-to-cart")}
-          type="primary"
+          type="default"
           icon={<ShoppingCartOutlined />}
+          onClick={handleAddToCart}
+          loading={addToCartLoading}
         >
           Thêm vào giỏ hàng
         </Button>
-        <Button size="large" className={cx("buy-now")} icon={<HeartOutlined />}>
+
+        <Button
+          size="large"
+          className={cx("buy-now")}
+          type="primary"
+          icon={<HeartOutlined />}
+          onClick={handleBuyNow}
+          loading={buyNowLoading}
+        >
           Mua ngay
         </Button>
       </div>

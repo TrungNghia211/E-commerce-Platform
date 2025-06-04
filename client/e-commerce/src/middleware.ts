@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { jwtDecode } from 'jwt-decode';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
 interface JWTPayload {
   iss: string;
@@ -11,28 +11,31 @@ interface JWTPayload {
 }
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === '/shop') {
-    const token = request.cookies.get('sessionToken')?.value;
+  if (request.nextUrl.pathname === "/shop") {
+    const token = request.cookies.get("sessionToken")?.value;
 
-    if (!token)
-      return NextResponse.redirect(new URL('/login', request.url));
+    if (!token) return NextResponse.redirect(new URL("/login", request.url));
 
     try {
       const decoded = jwtDecode<JWTPayload>(token);
-    
-      const roles = decoded.scope.split(' ');
-      if (!roles.includes('SELLER'))
-        return NextResponse.redirect(new URL('/shop/create-shop', request.url));
+
+      const roles = decoded.scope.split(" ");
+      if (!roles.includes("SELLER"))
+        return NextResponse.redirect(new URL("/shop/create-shop", request.url));
 
       return NextResponse.next();
     } catch (error) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
+  if (request.nextUrl.pathname === "/products/checkout") {
+    const token = request.cookies.get("sessionToken")?.value;
+    if (!token) return NextResponse.redirect(new URL("/login", request.url));
+  }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/shop',
-}; 
+  matcher: ["/shop/:path*", "/products/checkout/:path*", "/profile/:path*"],
+};

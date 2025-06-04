@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HomepageProductResponse {
-
     Integer id;
 
     String name;
@@ -18,5 +17,5 @@ public class HomepageProductResponse {
 
     Double price;
 
-    Integer purchaseCount;
+    Integer buyTurn;
 }

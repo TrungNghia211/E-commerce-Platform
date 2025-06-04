@@ -51,4 +51,7 @@ public class ProductItem {
             joinColumns = @JoinColumn(name = "product_item_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "variation_option_id", referencedColumnName = "id"))
     Set<VariationOption> variationOptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL)
+    Set<Order> order;
 }
