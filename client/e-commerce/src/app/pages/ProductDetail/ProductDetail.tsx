@@ -3,6 +3,7 @@ import { Col, Row } from "antd";
 import ProductInfo from "@/app/components/ProductInfo/ProductInfo";
 import ProductThumbnail from "@/app/components/ProductThumbnail/ProductThumbnail";
 import productApiRequest from "@/apiRequests/product";
+import RecommendedProducts from "@/app/components/RecommendedProducts/RecommendedProducts";
 
 export default async function ProductDetail({ id }: { id: number }) {
   const getProductDetail = await productApiRequest.getProductDetail(id);
@@ -37,11 +38,12 @@ export default async function ProductDetail({ id }: { id: number }) {
         </div>
       </div>
 
-      <div className="bg-[#ffffff] mt-[10px] p-[15px]">
+      {/* <div className="bg-[#ffffff] mt-[10px] p-[15px]">
         <p className="text-[30px] font-semibold text-center">
           Sản phẩm liên quan
         </p>
-      </div>
+      </div> */}
+      <RecommendedProducts productId={id} />
     </div>
   );
 }
