@@ -10,11 +10,21 @@ import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
 
 import styles from "./Header.module.scss";
+import { useCart } from "@/app/store/CartContext";
+import { clientSessionToken } from "@/lib/http";
 
 const cx = classNames.bind(styles);
 
 function Header() {
+  const { cartCount } = useCart();
+  const displayCartCount = clientSessionToken.value ? cartCount : 0;
+
   const router = useRouter();
+
+  const handleCartClick = () => {
+    if (clientSessionToken.value) router.push("/cart");
+    else router.push("/login");
+  };
 
   return (
     <>
@@ -65,9 +75,14 @@ function Header() {
             </button>
           </div>
 
-          <button className={cx("cartBtn")}>
+          <button className={cx("cartBtn")} onClick={handleCartClick}>
             <ShoppingCartOutlined className={cx("cartIcon")} />
-            <span className={cx("cartBadge")}>3</span>
+            {/* {cartCount > 0 && (
+              <span className={cx("cartBadge")}>{cartCount}</span>
+            )} */}
+            {displayCartCount > 0 && (
+              <span className={cx("cartBadge")}>{cartCount}</span>
+            )}
           </button>
         </div>
       </header>

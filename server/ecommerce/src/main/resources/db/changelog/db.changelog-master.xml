@@ -22,4 +22,8 @@
         <dropColumn tableName="shop" columnName="user_id"/>
     </changeSet>
 
+    <changeSet id="remove-quantity-column" author="Nghia Trung Nguyen">
+        <dropColumn tableName="cart" columnName="quantity"/>
+    </changeSet>
+
 </databaseChangeLog>

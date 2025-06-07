@@ -3,10 +3,11 @@ import { cookies } from "next/headers";
 
 import "@ant-design/v5-patch-for-react-19";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App } from "antd";
 
 import "./globals.css";
 import AppProvider from "@/app/AppProvider";
+import { CartProvider } from "@/app/store/CartContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -36,9 +37,11 @@ export default async function RootLayout({
           wave={{ disabled: true }}
         >
           <AntdRegistry>
-            <AppProvider initialSessionToken={sessionToken?.value}>
-              {children}
-            </AppProvider>
+            <CartProvider>
+              <AppProvider initialSessionToken={sessionToken?.value}>
+                <App>{children}</App>
+              </AppProvider>
+            </CartProvider>
           </AntdRegistry>
         </ConfigProvider>
       </body>

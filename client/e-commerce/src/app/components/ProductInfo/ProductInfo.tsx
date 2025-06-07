@@ -8,6 +8,8 @@ import classNames from "classnames/bind";
 
 import styles from "./ProductInfo.module.scss";
 import { ProductDetailType } from "@/types/product/types";
+import { addToCart, dispatchCartUpdateEvent } from "@/apiRequests/cart";
+import { clientSessionToken } from "@/lib/http";
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +21,7 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
   const [addToCartLoading, setAddToCartLoading] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
   const router = useRouter();
+  const [api, contextHolder] = notification.useNotification();
 
   // Memoize selected product item để tránh tính toán lại không cần thiết
   const selectedItem = useMemo(() => {
@@ -122,10 +125,13 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
       // Chuyển đến trang checkout
       const checkoutData = encodeURIComponent(JSON.stringify([checkoutItem]));
       router.push(`/products/checkout?items=${checkoutData}`);
-    } catch (error) {
+    } catch (error: unknown) {
       notification.error({
         message: "Lỗi",
-        description: "Không thể chuyển đến trang thanh toán!",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Không thể chuyển đến trang thanh toán!",
       });
     } finally {
       setBuyNowLoading(false);
@@ -134,67 +140,102 @@ function ProductInfo({ product }: { product: ProductDetailType }) {
 
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = async () => {
+    if (!clientSessionToken.value) {
+      notification.error({
+        message: "Vui lòng đăng nhập",
+        description: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+      });
+      router.push("/login");
+      return;
+    }
+
     if (!validateQuantityAndStock()) return;
 
     setAddToCartLoading(true);
 
     try {
-      const cartItem = {
+      await addToCart({
         productItemId: selectedItem.id,
-        productName: product.name,
-        thumbnail: selectedItem.thumbnail || product.thumbnail,
-        variations: hasVariations
-          ? selectedItem.variationOptions
-              .map((option) => {
-                const variation = product.variations.find((v) =>
-                  v.variationOptions.some((vo) => vo.id === option.id)
-                );
-                return `${variation?.name}: ${option.value}`;
-              })
-              .join(", ")
-          : "",
-        price: selectedItem.price,
         quantity: quantity,
-      };
+      });
 
-      // Gọi API thêm vào giỏ hàng (nếu có)
-      // await fetch('/api/cart/add', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(cartItem)
-      // });
+      // Dispatch event để cập nhật cart count trong header
+      dispatchCartUpdateEvent();
 
-      // Tạm thời lưu vào localStorage hoặc state management
-      const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-      const existingItemIndex = existingCart.findIndex(
-        (item: any) => item.productItemId === cartItem.productItemId
-      );
-
-      if (existingItemIndex >= 0) {
-        existingCart[existingItemIndex].quantity += cartItem.quantity;
-      } else {
-        existingCart.push(cartItem);
-      }
-
-      localStorage.setItem("cart", JSON.stringify(existingCart));
-
-      notification.success({
+      api.success({
         message: "Thành công",
         description: "Đã thêm sản phẩm vào giỏ hàng!",
       });
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      notification.error({
+    } catch (error: unknown) {
+      api.error({
         message: "Lỗi",
-        description: "Không thể thêm sản phẩm vào giỏ hàng!",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Không thể thêm sản phẩm vào giỏ hàng!",
       });
     } finally {
       setAddToCartLoading(false);
     }
+
+    // try {
+    //   const cartItem = {
+    //     productItemId: selectedItem.id,
+    //     productName: product.name,
+    //     thumbnail: selectedItem.thumbnail || product.thumbnail,
+    //     variations: hasVariations
+    //       ? selectedItem.variationOptions
+    //           .map((option) => {
+    //             const variation = product.variations.find((v) =>
+    //               v.variationOptions.some((vo) => vo.id === option.id)
+    //             );
+    //             return `${variation?.name}: ${option.value}`;
+    //           })
+    //           .join(", ")
+    //       : "",
+    //     price: selectedItem.price,
+    //     quantity: quantity,
+    //   };
+
+    //   // Gọi API thêm vào giỏ hàng (nếu có)
+    //   // await fetch('/api/cart/add', {
+    //   //   method: 'POST',
+    //   //   headers: { 'Content-Type': 'application/json' },
+    //   //   body: JSON.stringify(cartItem)
+    //   // });
+
+    //   // Tạm thời lưu vào localStorage hoặc state management
+    //   const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    //   const existingItemIndex = existingCart.findIndex(
+    //     (item: any) => item.productItemId === cartItem.productItemId
+    //   );
+
+    //   if (existingItemIndex >= 0) {
+    //     existingCart[existingItemIndex].quantity += cartItem.quantity;
+    //   } else {
+    //     existingCart.push(cartItem);
+    //   }
+
+    //   localStorage.setItem("cart", JSON.stringify(existingCart));
+
+    //   notification.success({
+    //     message: "Thành công",
+    //     description: "Đã thêm sản phẩm vào giỏ hàng!",
+    //   });
+    // } catch (error) {
+    //   console.error("Error adding to cart:", error);
+    //   notification.error({
+    //     message: "Lỗi",
+    //     description: "Không thể thêm sản phẩm vào giỏ hàng!",
+    //   });
+    // } finally {
+    //   setAddToCartLoading(false);
+    // }
   };
 
   return (
     <div className={cx("container")}>
+      {contextHolder}
       <Typography.Title level={3} className={cx("product-name")}>
         {product.name}
       </Typography.Title>

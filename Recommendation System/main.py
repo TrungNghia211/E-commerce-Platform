@@ -1,82 +1,3 @@
-# import pymysql
-# import pandas as pd
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
-# from flask import Flask, jsonify, request
-# from flask_cors import CORS
-
-# app = Flask(__name__)
-# CORS(app)
-
-# server = 'localhost'
-# database = 'ecommerce'
-# username = 'root'
-# password = '43danang211'
-
-# connection_string = f'mysql+pymysql://{username}:{password}@{server}/{database}'
-
-# try:
-#     conn = pymysql.connect(
-#         host=server,
-#         database=database,
-#         user=username,
-#         password=password,
-#         charset='utf8mb4'
-#     )
-    
-#     query = 'SELECT * FROM product'
-#     df_sanpham = pd.read_sql(query, conn)
-    
-#     conn.close()
-    
-# except Exception as e:
-#     print(f"Lỗi: {e}")
-
-# # Gom đặc trưng
-# features = ['description', 'price']
-
-# def combineFeatures(row):
-#     return str(row['price']) + " " + str(row['description'])
-
-# df_sanpham['combinedFeatures'] = df_sanpham.apply(combineFeatures, axis=1)
-# # print(df_sanpham['combinedFeatures'].head())
-
-# # Chuyển đổi dataframe thành các vector TF_IDF
-# tf = TfidfVectorizer()
-# tfMatrix = tf.fit_transform(df_sanpham['combinedFeatures'])
-
-# # Tính sự tương đồng
-# similar = cosine_similarity(tfMatrix)
-
-# number = 18
-# @app.route('/api', methods=['GET'])
-# def get_data():
-#     ket_qua = []
-#     productId = request.args.get('id')
-#     productId = int(productId)
-
-#     if productId not in df_sanpham['id'].values:
-#         return jsonify({'loi':'id khong hop le'})
-    
-#     indexproduct = df_sanpham[df_sanpham['id'] == productId].index[0]
-
-#     similarProduct = list(enumerate(similar[indexproduct]))
-
-#     sortedSimilarProduct = sorted(similarProduct, key=lambda x:x[1], reverse=True)
-
-#     def lay_ten(index):
-#         return (df_sanpham[df_sanpham.index == index]['name'].values[0])
-
-#     for i in range(1, number + 1):
-#         print(lay_ten(sortedSimilarProduct[i][0]))
-#         ket_qua.append(lay_ten(sortedSimilarProduct[i][0]))
-
-#     data = {'san pham goi y':ket_qua}
-#     return jsonify(data)
-
-# if __name__ == '__main__':
-#     app.run(port=5555)
-
 import pymysql
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -137,6 +58,8 @@ def get_recommendations():
             return jsonify({'error': 'Thiếu tham số id'})
         
         product_id = int(product_id)
+
+        print(df_sanpham['id'].values)
 
         if product_id not in df_sanpham['id'].values:
             return jsonify({'error': 'ID sản phẩm không hợp lệ'})

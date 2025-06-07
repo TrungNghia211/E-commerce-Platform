@@ -125,6 +125,8 @@ export default function LoginForm() {
       const res = await userApiRequest.login(values);
       await userApiRequest.auth({ sessionToken: res.payload.result.token });
       clientSessionToken.value = res.payload.result.token;
+      window.dispatchEvent(new Event("login")); // Thêm dispatch event
+      window.dispatchEvent(new Event("cartUpdated")); // Cập nhật giỏ hàng
       const isAdmin = res.payload.result.roles.some(
         (role: Role) => role.name === "ADMIN"
       );

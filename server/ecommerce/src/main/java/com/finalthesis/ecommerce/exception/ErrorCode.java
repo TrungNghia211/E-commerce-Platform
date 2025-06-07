@@ -29,7 +29,9 @@ public enum ErrorCode {
     PRODUCT_ITEM_NOT_FOUND(1016, "Product item not found", HttpStatus.NOT_FOUND),
     PRODUCT_NOT_FOUND(1017, "Product not found", HttpStatus.NOT_FOUND),
     SHOP_NOT_FOUND(1018, "Shop not found", HttpStatus.NOT_FOUND),
-    ORDER_NOT_FOUND(1019, "Order not found", HttpStatus.NOT_FOUND),;
+    ORDER_NOT_FOUND(1019, "Order not found", HttpStatus.NOT_FOUND),
+    CART_NOT_FOUND(1020, "Cart not found", HttpStatus.NOT_FOUND),
+    ;
 
     int code;
     String message;

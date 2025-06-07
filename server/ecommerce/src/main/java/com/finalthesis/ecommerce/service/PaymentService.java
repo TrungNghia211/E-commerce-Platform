@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import com.finalthesis.ecommerce.utils.VNPayUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -166,10 +166,8 @@ public class PaymentService {
                 product.setQuantityInStock(product.getQuantityInStock() - order.getQuantity());
 
                 int quantityInStock = 0;
-                if (product.getBuyTurn() == null)
-                    quantityInStock = 0;
-                else
-                    quantityInStock = product.getBuyTurn();
+                if (product.getBuyTurn() == null) quantityInStock = 0;
+                else quantityInStock = product.getBuyTurn();
 
                 product.setBuyTurn(quantityInStock + order.getQuantity());
 

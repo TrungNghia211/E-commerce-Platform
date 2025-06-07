@@ -54,4 +54,7 @@ public class ProductItem {
 
     @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL)
     Set<Order> order;
+
+    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<CartItem> items = new HashSet<>();
 }

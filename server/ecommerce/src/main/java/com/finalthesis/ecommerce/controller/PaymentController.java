@@ -2,13 +2,12 @@ package com.finalthesis.ecommerce.controller;
 
 import java.util.Map;
 
-import com.finalthesis.ecommerce.dto.response.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.finalthesis.ecommerce.dto.request.payment.CreateOrderRequest;
 import com.finalthesis.ecommerce.dto.request.payment.PaymentReturnResponse;
+import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.service.PaymentService;
 import com.finalthesis.ecommerce.utils.VNPayUtils;
 
@@ -16,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -26,7 +26,8 @@ public class PaymentController {
     PaymentService paymentService;
 
     @PostMapping("/create-order")
-    public ApiResponse<String> createOrder(@RequestBody CreateOrderRequest request, HttpServletRequest httpServletRequest) {
+    public ApiResponse<String> createOrder(
+            @RequestBody CreateOrderRequest request, HttpServletRequest httpServletRequest) {
         var ipAddress = VNPayUtils.getIpAddress(httpServletRequest);
         request.setIpAddress(ipAddress);
         return ApiResponse.<String>builder()
