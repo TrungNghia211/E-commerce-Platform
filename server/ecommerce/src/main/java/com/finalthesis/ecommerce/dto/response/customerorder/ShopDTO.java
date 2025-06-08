@@ -1,4 +1,4 @@
-package com.finalthesis.ecommerce.dto.response;
+package com.finalthesis.ecommerce.dto.response.customerorder;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,16 +8,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class ShopDTO {
     Integer id;
-
-    String username;
-
-    String fullName;
-
-    String email;
-
-    String phone;
-
+    String name;
     String avatar;
 }

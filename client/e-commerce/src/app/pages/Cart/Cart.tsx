@@ -52,7 +52,6 @@ const CartPage = () => {
   }>({});
   const router = useRouter();
 
-  // Load cart items khi component mount
   useEffect(() => {
     loadCartItems();
   }, []);
@@ -173,7 +172,7 @@ const CartPage = () => {
 
       {/* Cart content */}
       {!loading && cartItems.length > 0 && (
-        <div className="container mx-auto py-8 mt-[110px] px-[160px]">
+        <div className="container mx-auto py-5 mt-[110px] px-[160px]">
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <Title
               level={2}

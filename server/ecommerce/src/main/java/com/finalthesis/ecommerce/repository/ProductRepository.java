@@ -19,8 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             value = "SELECT p.id, p.name, p.thumbnail, min(pi.price) AS price, p.buy_turn AS buyTurn "
                     + "FROM product p JOIN product_item pi "
                     + "ON p.id = pi.product_id "
-                    + "GROUP BY p.id, p.thumbnail, p.name, p.buy_turn "
-                    + "ORDER BY p.buy_turn DESC",
+                    + "GROUP BY p.id, p.thumbnail, p.name, p.buy_turn ",
+//                    + "ORDER BY p.buy_turn DESC",
             nativeQuery = true)
     Page<HomepageProductResponse> getHomepageProducts(Pageable pageable);
 

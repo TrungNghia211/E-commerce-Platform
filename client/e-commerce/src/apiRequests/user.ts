@@ -8,6 +8,8 @@ const userApiRequest = {
 
   auth: (body: { sessionToken: string }) =>
     http.post("/api/auth", body, { baseUrl: "" }),
+
+  getMe: () => http.get<any>("/users/me"),
 };
 
 export default userApiRequest;

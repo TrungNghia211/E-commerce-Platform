@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Layout,
   Menu,
@@ -14,9 +14,14 @@ import {
   Space,
   Tag,
   Avatar,
-  Divider,
   notification,
-  Tabs,
+  Modal,
+  Descriptions,
+  Image,
+  Select,
+  DatePicker,
+  Row,
+  Col,
 } from "antd";
 import {
   UserOutlined,
@@ -26,153 +31,192 @@ import {
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 
+import {
+  OrderDetailDTO,
+  OrderDTO,
+  OrderListResponseDTO,
+  OrderStatus,
+} from "@/types/customer-order/types";
+import { orderService } from "@/apiRequests/customerOrder";
+import {
+  formatCurrency,
+  formatDate,
+  getPaymentMethodText,
+  getStatusColor,
+  getStatusText,
+} from "@/app/utils/formatters";
+
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
-
-interface Order {
-  id: number;
-  orderCode: string;
-  productName: string;
-  quantity: number;
-  totalPrice: number;
-  status: string;
-  paymentMethod: string;
-  createdAt: string;
-  shippingAddress: string;
-}
-
-interface UserProfile {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  avatar?: string;
-}
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState("profile");
   const [profileForm] = Form.useForm();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [orders, setOrders] = useState<Order[]>([]);
+
+  const [activeTab, setActiveTab] = useState("profile");
+
+  // const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  const [userProfile, setUserProfile] = useState(null);
+
+  const [orders, setOrders] = useState<OrderDTO[]>([]);
+
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+
+  const [orderDetailModal, setOrderDetailModal] = useState(false);
+
+  const [selectedOrder, setSelectedOrder] = useState<OrderDetailDTO | null>(
+    null
+  );
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
+
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | undefined>();
+
+  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
+
+  // const router = useRouter();
+
   const searchParams = useSearchParams();
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState<OrderDTO[]>([]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
-    if (tab) {
-      setActiveTab(tab === "orders" ? "orders" : "profile");
-    }
+    if (tab) setActiveTab(tab === "orders" ? "orders" : "profile");
 
-    // Load user profile and orders
-    loadUserData();
+    // loadUserProfile();
+    if (tab === "orders") loadOrders();
   }, [searchParams]);
 
-  const loadUserData = async () => {
-    setLoading(true);
-    try {
-      // Mock data - thay thế bằng API calls thực tế
-      setUserProfile({
-        id: 1,
-        name: "Nguyễn Văn A",
-        email: "nguyenvana@email.com",
-        phone: "0123456789",
-        address: "123 Đường ABC, Quận 1, TP.HCM",
-      });
+  // const loadUserProfile = async () => {
+  //   try {
+  //     const profile = await userService.getUserProfile();
+  //     setUserProfile(profile);
+  //     profileForm.setFieldsValue(profile);
+  //   } catch (error) {
+  //     console.error("Error loading user profile:", error);
+  //     notification.error({
+  //       message: "Lỗi",
+  //       description: "Không thể tải thông tin người dùng!",
+  //     });
+  //   }
+  // };
 
-      setOrders([
-        {
-          id: 1,
-          orderCode: "DH001",
-          productName: "iPhone 15 Pro Max",
-          quantity: 1,
-          totalPrice: 30000000,
-          status: "COMPLETED",
-          paymentMethod: "VNPAY",
-          createdAt: "2024-03-15",
-          shippingAddress: "123 Đường ABC, Quận 1, TP.HCM",
-        },
-        {
-          id: 2,
-          orderCode: "DH002",
-          productName: "Samsung Galaxy S24",
-          quantity: 1,
-          totalPrice: 25000000,
-          status: "PROCESSING",
-          paymentMethod: "COD",
-          createdAt: "2024-03-20",
-          shippingAddress: "456 Đường XYZ, Quận 2, TP.HCM",
-        },
-      ]);
+  const handleSearch = (value: string) => {
+    setSearchKeyword(value);
+
+    if (!value.trim()) {
+      setFilteredOrders(orders);
+      return;
+    }
+
+    const keyword = value.toLowerCase();
+    const filtered = orders.filter(
+      (order) =>
+        order.productItem.productName.toLowerCase().includes(keyword) ||
+        order.shop.name.toLowerCase().includes(keyword)
+    );
+
+    setFilteredOrders(filtered);
+  };
+
+  const loadOrders = async (page: number = 1, status?: OrderStatus) => {
+    setLoading(true);
+
+    try {
+      let response: OrderListResponseDTO;
+
+      if (dateRange)
+        response = await orderService.getOrdersByDateRange(
+          dateRange[0],
+          dateRange[1],
+          page - 1,
+          pagination.pageSize
+        );
+      else
+        response = await orderService.getCustomerOrders(
+          page - 1,
+          pagination.pageSize,
+          status
+        );
+
+      setOrders(response.result.orders);
+      setPagination({
+        ...pagination,
+        current: page,
+        total: response.result.totalElements,
+      });
     } catch (error) {
-      console.error("Error loading user data:", error);
+      console.error("Error loading orders:", error);
       notification.error({
         message: "Lỗi",
-        description: "Không thể tải thông tin người dùng!",
+        description: "Không thể tải danh sách đơn hàng!",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateProfile = async (values: any) => {
-    setLoading(true);
+  // const handleUpdateProfile = async (values: any) => {
+  //   setLoading(true);
+  //   try {
+  //     const updatedProfile = await userService.updateUserProfile(values);
+  //     setUserProfile(updatedProfile);
+
+  //     notification.success({
+  //       message: "Thành công",
+  //       description: "Cập nhật thông tin thành công!",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //     notification.error({
+  //       message: "Lỗi",
+  //       description: "Không thể cập nhật thông tin!",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleViewOrderDetail = async (orderId: number) => {
     try {
-      // Call API to update profile
-      console.log("Updating profile:", values);
-
-      // Mock success
-      notification.success({
-        message: "Thành công",
-        description: "Cập nhật thông tin thành công!",
-      });
-
-      // Update local state
-      setUserProfile({ ...userProfile!, ...values });
+      setLoading(true);
+      const orderDetail = await orderService.getOrderDetail(orderId);
+      setSelectedOrder(orderDetail.result);
+      setOrderDetailModal(true);
     } catch (error) {
-      console.error("Error updating profile:", error);
       notification.error({
         message: "Lỗi",
-        description: "Không thể cập nhật thông tin!",
+        description: "Không thể tải chi tiết đơn hàng!",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return "green";
-      case "PROCESSING":
-        return "blue";
-      case "CANCELLED":
-        return "red";
-      case "PENDING":
-        return "orange";
-      default:
-        return "default";
-    }
+  const handleStatusFilterChange = (status: OrderStatus | undefined) => {
+    setStatusFilter(status);
+    loadOrders(1, status);
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return "Hoàn thành";
-      case "PROCESSING":
-        return "Đang xử lý";
-      case "CANCELLED":
-        return "Đã hủy";
-      case "PENDING":
-        return "Chờ xác nhận";
-      default:
-        return status;
-    }
+  const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+    if (dates) setDateRange(dateStrings);
+    else setDateRange(null);
+    loadOrders(1, statusFilter);
   };
 
-  const orderColumns: ColumnsType<Order> = [
+  const handleTableChange = (paginationInfo: any) => {
+    loadOrders(paginationInfo.current, statusFilter);
+  };
+
+  const orderColumns: ColumnsType<OrderDTO> = [
     {
       title: "Mã đơn hàng",
       dataIndex: "orderCode",
@@ -181,8 +225,25 @@ export default function ProfilePage() {
     },
     {
       title: "Sản phẩm",
-      dataIndex: "productName",
-      key: "productName",
+      key: "product",
+      render: (_, record) => (
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {record.productItem.thumbnail && (
+            <Image
+              src={record.productItem.thumbnail}
+              width={40}
+              height={40}
+              style={{ objectFit: "cover", borderRadius: "4px" }}
+              fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FgYxN"
+            />
+          )}
+          <div>
+            <Text strong>{record.productItem.productName}</Text>
+            <br />
+            <Text type="secondary">{record.shop.name}</Text>
+          </div>
+        </div>
+      ),
     },
     {
       title: "Số lượng",
@@ -191,11 +252,11 @@ export default function ProfilePage() {
     },
     {
       title: "Tổng tiền",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (price) => (
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (amount) => (
         <Text strong style={{ color: "#ff4d4f" }}>
-          ₫{price.toLocaleString("vi-VN")}
+          {formatCurrency(amount)}
         </Text>
       ),
     },
@@ -211,6 +272,7 @@ export default function ProfilePage() {
       title: "Ngày đặt",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (date) => formatDate(date),
     },
     {
       title: "Thao tác",
@@ -220,7 +282,7 @@ export default function ProfilePage() {
           <Button
             type="link"
             icon={<EyeOutlined />}
-            onClick={() => console.log("View order:", record.id)}
+            onClick={() => handleViewOrderDetail(record.id)}
           >
             Xem chi tiết
           </Button>
@@ -247,9 +309,13 @@ export default function ProfilePage() {
       <Layout style={{ background: "#fff" }}>
         <Sider width={250} style={{ background: "#fff" }}>
           <div style={{ padding: "20px", textAlign: "center" }}>
-            <Avatar size={80} icon={<UserOutlined />} />
+            <Avatar
+              size={80}
+              src={userProfile?.avatar}
+              icon={<UserOutlined />}
+            />
             <Title level={4} style={{ marginTop: "10px" }}>
-              {userProfile?.name || "Người dùng"}
+              {userProfile?.fullName || "Người dùng"}
             </Title>
           </div>
           <Menu
@@ -258,7 +324,9 @@ export default function ProfilePage() {
             items={menuItems}
             onClick={({ key }) => {
               setActiveTab(key);
-              // router.push(`/profile?tab=${key}`);
+              if (key === "orders") {
+                loadOrders();
+              }
             }}
           />
         </Sider>
@@ -270,11 +338,11 @@ export default function ProfilePage() {
                 <Form
                   form={profileForm}
                   layout="vertical"
-                  onFinish={handleUpdateProfile}
+                  // onFinish={handleUpdateProfile}
                   // initialValues={userProfile}
                 >
                   <Form.Item
-                    name="name"
+                    name="fullName"
                     label="Họ và tên"
                     rules={[
                       { required: true, message: "Vui lòng nhập họ tên!" },
@@ -311,16 +379,6 @@ export default function ProfilePage() {
                     <Input />
                   </Form.Item>
 
-                  <Form.Item
-                    name="address"
-                    label="Địa chỉ"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập địa chỉ!" },
-                    ]}
-                  >
-                    <Input.TextArea rows={3} />
-                  </Form.Item>
-
                   <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading}>
                       Cập nhật thông tin
@@ -331,25 +389,166 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "orders" && (
-              <Card title="Đơn hàng của tôi">
+              <Card
+                title="Đơn hàng của tôi"
+                extra={
+                  <Space>
+                    <Input.Search
+                      placeholder="Tìm kiếm theo tên sản phẩm hoặc tên shop"
+                      allowClear
+                      enterButton
+                      onSearch={handleSearch}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      style={{ width: 300 }}
+                    />
+
+                    <Select
+                      placeholder="Lọc theo trạng thái"
+                      allowClear
+                      style={{ width: 150 }}
+                      onChange={handleStatusFilterChange}
+                    >
+                      <Option value={OrderStatus.PENDING}>Chờ xác nhận</Option>
+                      <Option value={OrderStatus.CONFIRMED}>Đã xác nhận</Option>
+                      <Option value={OrderStatus.PROCESSING}>Đang xử lý</Option>
+                      <Option value={OrderStatus.SHIPPING}>
+                        Đang giao hàng
+                      </Option>
+                      <Option value={OrderStatus.DELIVERED}>Đã giao</Option>
+                      <Option value={OrderStatus.CANCELLED}>Đã hủy</Option>
+                    </Select>
+
+                    {/* <RangePicker
+                      placeholder={["Từ ngày", "Đến ngày"]}
+                      onChange={handleDateRangeChange}
+                      format="YYYY-MM-DD"
+                    /> */}
+                  </Space>
+                }
+              >
                 <Table
                   columns={orderColumns}
-                  dataSource={orders}
+                  // dataSource={orders}
+                  dataSource={searchKeyword ? filteredOrders : orders}
                   rowKey="id"
                   loading={loading}
+                  // pagination={{
+                  //   ...pagination,
+                  //   showSizeChanger: true,
+                  //   showQuickJumper: true,
+                  //   showTotal: (total, range) =>
+                  //     `${range[0]}-${range[1]} của ${total} đơn hàng`,
+                  // }}
                   pagination={{
-                    pageSize: 10,
+                    total: searchKeyword
+                      ? filteredOrders.length
+                      : orders.length,
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (total, range) =>
                       `${range[0]}-${range[1]} của ${total} đơn hàng`,
                   }}
+                  onChange={handleTableChange}
                 />
               </Card>
             )}
           </Content>
         </Layout>
       </Layout>
+
+      {/* Order Detail Modal */}
+      <Modal
+        title="Chi tiết đơn hàng"
+        open={orderDetailModal}
+        onCancel={() => setOrderDetailModal(false)}
+        footer={null}
+        width={800}
+      >
+        {selectedOrder && (
+          <div>
+            <Descriptions bordered column={2} size="small">
+              <Descriptions.Item label="Mã đơn hàng" span={2}>
+                <Text strong>{selectedOrder.orderCode}</Text>
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Trạng thái">
+                <Tag color={getStatusColor(selectedOrder.status)}>
+                  {getStatusText(selectedOrder.status)}
+                </Tag>
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Ngày đặt">
+                {formatDate(selectedOrder.createdAt)}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Tổng tiền" span={2}>
+                <Text strong style={{ color: "#ff4d4f", fontSize: "16px" }}>
+                  {formatCurrency(selectedOrder.totalAmount)}
+                </Text>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Card title="Thông tin sản phẩm" style={{ marginTop: 16 }}>
+              <Row gutter={16}>
+                <Col span={6}>
+                  <Image
+                    src={selectedOrder.productItem.thumbnail}
+                    width="100%"
+                    style={{ borderRadius: "8px" }}
+                    fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FgYxN"
+                  />
+                </Col>
+                <Col span={18}>
+                  <Title level={4}>
+                    {selectedOrder.productItem.productName}
+                  </Title>
+
+                  {/* <br /> */}
+                  <Text>Số lượng: {selectedOrder.quantity}</Text>
+                  <br />
+                  <Text>
+                    Giá: {formatCurrency(selectedOrder.productItem.price)}
+                  </Text>
+
+                  {selectedOrder.productItem.variationOptions.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <Text strong>Thuộc tính:</Text>
+                      <br />
+                      {selectedOrder.productItem.variationOptions.map(
+                        (option) => (
+                          <Tag key={option.id} style={{ margin: "2px" }}>
+                            {option.variationName}: {option.value}
+                          </Tag>
+                        )
+                      )}
+                    </div>
+                  )}
+                </Col>
+              </Row>
+            </Card>
+
+            <Card title="Thông tin giao hàng" style={{ marginTop: 16 }}>
+              <Descriptions column={1}>
+                <Descriptions.Item label="Người nhận">
+                  {selectedOrder.customerName}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Số điện thoại">
+                  {selectedOrder.customerPhone}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Địa chỉ">
+                  {selectedOrder.shippingAddress}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Phương thức thanh toán">
+                  {getPaymentMethodText(selectedOrder.paymentMethod)}
+                </Descriptions.Item>
+              </Descriptions>
+            </Card>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

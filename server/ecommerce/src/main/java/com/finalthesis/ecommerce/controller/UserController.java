@@ -26,4 +26,12 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
+    
+    @GetMapping("/me")
+    public ApiResponse<UserResponse> getMe() {
+        UserResponse userResponse = userService.getUserByUsername();
+        return ApiResponse.<UserResponse>builder()
+                    .result(userResponse)
+                    .build();
+    }
 }
