@@ -9,7 +9,7 @@ import com.finalthesis.ecommerce.entity.ProductCategory;
 
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
-    List<ProductCategory> findTop8ByOrderByCreatedAtDesc();
+    List<ProductCategory> findTop8ByParentCategoryIdIsNullOrderByCreatedAtDesc();
 
     boolean existsByName(String name);
 

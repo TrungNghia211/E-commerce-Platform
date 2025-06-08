@@ -32,7 +32,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     CloudinaryService cloudinaryService;
 
     public List<ProductCategoryResponse> findTop8ByOrderByCreatedAtDesc() {
-        return productCategoryRepository.findTop8ByOrderByCreatedAtDesc().stream()
+        return productCategoryRepository.findTop8ByParentCategoryIdIsNullOrderByCreatedAtDesc().stream()
                 .map(productCategoryMapper::toProductCategoryResponse)
                 .toList();
     }
