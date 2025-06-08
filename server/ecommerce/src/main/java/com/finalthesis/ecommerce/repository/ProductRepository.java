@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
                     + "FROM product p JOIN product_item pi "
                     + "ON p.id = pi.product_id "
                     + "GROUP BY p.id, p.thumbnail, p.name, p.buy_turn ",
-//                    + "ORDER BY p.buy_turn DESC",
+            //                    + "ORDER BY p.buy_turn DESC",
             nativeQuery = true)
     Page<HomepageProductResponse> getHomepageProducts(Pageable pageable);
 

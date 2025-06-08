@@ -1,4 +1,6 @@
-package com.finalthesis.ecommerce.dto.response.customerorder;
+package com.finalthesis.ecommerce.dto.response.sellerorder;
+
+import java.util.List;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,10 +10,16 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductItemDTO {
+public class ProductItemDto {
     Integer id;
+
     String sku;
+
     Double price;
+
     String thumbnail;
-    String productName;
+
+    ProductDto product;
+
+    List<VariationOptionDto> variationOptions;
 }

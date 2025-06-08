@@ -1,5 +1,16 @@
 package com.finalthesis.ecommerce.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.finalthesis.ecommerce.dto.response.customerorder.*;
 import com.finalthesis.ecommerce.entity.*;
 import com.finalthesis.ecommerce.enums.OrderStatus;
@@ -8,19 +19,10 @@ import com.finalthesis.ecommerce.exception.ErrorCode;
 import com.finalthesis.ecommerce.repository.OrderRepository;
 import com.finalthesis.ecommerce.repository.UserRepository;
 import com.finalthesis.ecommerce.service.CustomerOrderService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -41,12 +43,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         if (status != null)
             orderPage = orderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(user.getId(), status, pageable);
-        else
-            orderPage = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable);
+        else orderPage = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable);
 
-        List<OrderDTO> orderDTOs = orderPage.getContent().stream()
-                .map(this::convertToOrderDTO)
-                .collect(Collectors.toList());
+        List<OrderDTO> orderDTOs =
+                orderPage.getContent().stream().map(this::convertToOrderDTO).collect(Collectors.toList());
 
         return OrderListResponse.builder()
                 .orders(orderDTOs)
@@ -65,24 +65,23 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         User user =
                 userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Order order = orderRepository.findByIdAndUserId(orderId, user.getId());
-        if (order == null)
-            throw new RuntimeException("Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập");
+        if (order == null) throw new RuntimeException("Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập");
 
         return convertToOrderDetailDTO(order);
     }
 
     @Override
-    public OrderListResponse getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate, Integer page, Integer size) {
+    public OrderListResponse getOrdersByDateRange(
+            LocalDateTime startDate, LocalDateTime endDate, Integer page, Integer size) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user =
                 userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Pageable pageable = PageRequest.of(page, size);
-        Page<Order> orderPage = orderRepository.findByUserIdAndCreatedAtBetween(
-                user.getId(), startDate, endDate, pageable);
+        Page<Order> orderPage =
+                orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDate, endDate, pageable);
 
-        List<OrderDTO> orderDTOs = orderPage.getContent().stream()
-                .map(this::convertToOrderDTO)
-                .collect(Collectors.toList());
+        List<OrderDTO> orderDTOs =
+                orderPage.getContent().stream().map(this::convertToOrderDTO).collect(Collectors.toList());
 
         return OrderListResponse.builder()
                 .orders(orderDTOs)

@@ -1,9 +1,9 @@
 package com.finalthesis.ecommerce.dto.response.customerorder;
 
+import java.util.List;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -12,10 +12,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderListResponse {
     List<OrderDTO> orders;
+
     Long totalElements;
+
     Integer totalPages;
+
     Integer currentPage;
+
     Integer pageSize;
+
     Boolean hasNext;
+
     Boolean hasPrevious;
 }

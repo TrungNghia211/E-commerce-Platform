@@ -3,12 +3,12 @@ package com.finalthesis.ecommerce.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.finalthesis.ecommerce.entity.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.finalthesis.ecommerce.dto.request.AddToCartRequest;
 import com.finalthesis.ecommerce.dto.response.CartItemResponse;
+import com.finalthesis.ecommerce.entity.*;
 import com.finalthesis.ecommerce.exception.AppException;
 import com.finalthesis.ecommerce.exception.ErrorCode;
 import com.finalthesis.ecommerce.repository.CartItemRepository;
@@ -79,16 +79,14 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItemResponse> getCartItems() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Cart cart = getOrCreateCartForUser(user);
 
         List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
 
-        return cartItems.stream()
-                .map(this::convertToCartItemResponse)
-                .collect(Collectors.toList());
+        return cartItems.stream().map(this::convertToCartItemResponse).collect(Collectors.toList());
     }
 
     private CartItemResponse convertToCartItemResponse(CartItem cartItem) {
@@ -104,8 +102,10 @@ public class CartServiceImpl implements CartService {
                 .productItemId(productItem.getId())
                 .productId(product.getId())
                 .productName(product.getName())
-                .thumbnail(productItem.getThumbnail() != null ?
-                        productItem.getThumbnail() : product.getThumbnail()) // Fallback to product thumbnail
+                .thumbnail(
+                        productItem.getThumbnail() != null
+                                ? productItem.getThumbnail()
+                                : product.getThumbnail()) // Fallback to product thumbnail
                 .variations(formattedVariations)
                 .price(productItem.getPrice())
                 .quantity(cartItem.getQuantity())
@@ -119,8 +119,7 @@ public class CartServiceImpl implements CartService {
     private String formatVariations(ProductItem productItem) {
         Set<VariationOption> variationOptions = productItem.getVariationOptions();
 
-        if (variationOptions == null || variationOptions.isEmpty())
-            return ""; // Không có biến thể
+        if (variationOptions == null || variationOptions.isEmpty()) return ""; // Không có biến thể
 
         // Group variation options by variation name
         Map<String, String> variationMap = variationOptions.stream()
@@ -128,7 +127,7 @@ public class CartServiceImpl implements CartService {
                         option -> option.getVariation().getName(),
                         VariationOption::getValue,
                         (existing, replacement) -> existing // Trong trường hợp duplicate key
-                ));
+                        ));
 
         // Format thành string: "Size: L, Màu sắc: Đỏ"
         return variationMap.entrySet().stream()

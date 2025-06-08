@@ -1,13 +1,14 @@
 package com.finalthesis.ecommerce.dto.response.customerorder;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import com.finalthesis.ecommerce.enums.OrderStatus;
 import com.finalthesis.ecommerce.enums.PaymentMethod;
 import com.finalthesis.ecommerce.enums.PaymentStatus;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder

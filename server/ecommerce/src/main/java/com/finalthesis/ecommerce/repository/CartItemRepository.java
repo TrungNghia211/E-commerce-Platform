@@ -13,12 +13,11 @@ import com.finalthesis.ecommerce.entity.CartItem;
 public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
     List<CartItem> findByCartId(Integer cartId);
 
-    @Query("SELECT ci FROM CartItem ci " +
-            "JOIN FETCH ci.productItem pi " +
-            "JOIN FETCH pi.product p " +
-            "JOIN FETCH p.shop s " +
-            "LEFT JOIN FETCH pi.variationOptions vo " +
-            "LEFT JOIN FETCH vo.variation v " +
-            "WHERE ci.cart.id = :cartId")
+    @Query("SELECT ci FROM CartItem ci " + "JOIN FETCH ci.productItem pi "
+            + "JOIN FETCH pi.product p "
+            + "JOIN FETCH p.shop s "
+            + "LEFT JOIN FETCH pi.variationOptions vo "
+            + "LEFT JOIN FETCH vo.variation v "
+            + "WHERE ci.cart.id = :cartId")
     List<CartItem> findByCartIdWithDetails(@Param("cartId") Integer cartId);
 }

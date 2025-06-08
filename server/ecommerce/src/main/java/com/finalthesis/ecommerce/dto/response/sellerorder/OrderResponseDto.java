@@ -1,4 +1,4 @@
-package com.finalthesis.ecommerce.dto.response.customerorder;
+package com.finalthesis.ecommerce.dto.response.sellerorder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDTO {
+public class OrderResponseDto {
     Integer id;
 
     String orderCode;
@@ -42,7 +42,5 @@ public class OrderDTO {
 
     LocalDateTime updatedAt;
 
-    ProductItemDTO productItem;
-
-    ShopDTO shop;
+    ProductItemDto productItem;
 }

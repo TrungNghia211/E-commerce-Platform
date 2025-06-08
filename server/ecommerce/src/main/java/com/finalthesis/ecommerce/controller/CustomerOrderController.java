@@ -1,17 +1,19 @@
 package com.finalthesis.ecommerce.controller;
 
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
 import com.finalthesis.ecommerce.dto.response.ApiResponse;
 import com.finalthesis.ecommerce.dto.response.customerorder.OrderDetailDTO;
 import com.finalthesis.ecommerce.dto.response.customerorder.OrderListResponse;
 import com.finalthesis.ecommerce.enums.OrderStatus;
 import com.finalthesis.ecommerce.service.CustomerOrderService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/customer/orders")
@@ -27,18 +29,13 @@ public class CustomerOrderController {
             @RequestParam(required = false) OrderStatus status) {
 
         OrderListResponse response = customerOrderService.getCustomerOrders(page, size, status);
-        return ApiResponse.<OrderListResponse>builder()
-                .result(response)
-                .build();
+        return ApiResponse.<OrderListResponse>builder().result(response).build();
     }
 
     @GetMapping("/{orderId}")
-    public ApiResponse<OrderDetailDTO> getOrderDetail(
-            @PathVariable Integer orderId) {
+    public ApiResponse<OrderDetailDTO> getOrderDetail(@PathVariable Integer orderId) {
         OrderDetailDTO orderDetail = customerOrderService.getOrderDetail(orderId);
-        return ApiResponse.<OrderDetailDTO>builder()
-                .result(orderDetail)
-                .build();
+        return ApiResponse.<OrderDetailDTO>builder().result(orderDetail).build();
     }
 
     @GetMapping("/date-range")
@@ -48,10 +45,7 @@ public class CustomerOrderController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
 
-        OrderListResponse response = customerOrderService.getOrdersByDateRange(
-                startDate, endDate, page, size);
-        return ApiResponse.<OrderListResponse>builder()
-                .result(response)
-                .build();
+        OrderListResponse response = customerOrderService.getOrdersByDateRange(startDate, endDate, page, size);
+        return ApiResponse.<OrderListResponse>builder().result(response).build();
     }
 }

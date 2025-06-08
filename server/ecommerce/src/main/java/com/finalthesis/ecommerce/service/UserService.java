@@ -5,5 +5,6 @@ import com.finalthesis.ecommerce.dto.response.UserResponse;
 
 public interface UserService {
     UserResponse createUser(UserCreationRequest user);
+
     UserResponse getUserByUsername();
 }

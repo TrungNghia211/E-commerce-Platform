@@ -1,5 +1,6 @@
 type CustomOptions = Omit<RequestInit, "method"> & {
   baseUrl?: string | undefined;
+  params?: Record<string, any>;
 };
 
 export class HttpError extends Error {
@@ -54,9 +55,19 @@ const request = async <Response>(
       ? "http://localhost:8080/ecommerce"
       : options.baseUrl;
 
-  const fullUrl = url.startsWith("/")
-    ? `${baseUrl}${url}`
-    : `${baseUrl}/${url}`;
+  let fullUrl = url.startsWith("/") ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
+
+  if (options?.params) {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(options.params).forEach(([key, value]) => {
+      if (value !== undefined) searchParams.append(key, String(value));
+    });
+
+    const queryString = searchParams.toString();
+
+    if (queryString) fullUrl += `?${queryString}`;
+  }
 
   const res = await fetch(fullUrl, {
     ...options,

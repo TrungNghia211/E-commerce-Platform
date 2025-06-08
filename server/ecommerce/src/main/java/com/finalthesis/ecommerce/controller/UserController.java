@@ -17,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-
     UserService userService;
 
     @PostMapping
@@ -26,12 +25,10 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
-    
+
     @GetMapping("/me")
     public ApiResponse<UserResponse> getMe() {
         UserResponse userResponse = userService.getUserByUsername();
-        return ApiResponse.<UserResponse>builder()
-                    .result(userResponse)
-                    .build();
+        return ApiResponse.<UserResponse>builder().result(userResponse).build();
     }
 }

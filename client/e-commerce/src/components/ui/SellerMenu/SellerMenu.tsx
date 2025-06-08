@@ -20,6 +20,14 @@ const items: MenuItem[] = [
       { key: "productList", label: "Danh sách sản phẩm" },
     ],
   },
+  {
+    key: "order",
+    label: "Quản lý đơn hàng",
+    children: [
+      { key: "orderList", label: "Danh sách đơn hàng" },
+      { key: "orderStatistics", label: "Thống kê đơn hàng" },
+    ],
+  },
 ];
 
 interface LevelKeysProps {
@@ -83,6 +91,12 @@ export default function SellerMenu() {
         break;
       case "productList":
         router.push("/shop/products");
+        break;
+      case "orderList":
+        router.push("/shop/orders");
+        break;
+      case "orderStatistics":
+        router.push("/shop/orders/statistics");
         break;
       default:
         break;
