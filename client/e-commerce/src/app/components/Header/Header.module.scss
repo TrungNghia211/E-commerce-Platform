@@ -326,6 +326,8 @@
   gap: 8px;
   cursor: pointer;
   padding: 4px 8px;
+  font-weight: 500;
+  font-size: 14px;
   border-radius: 4px;
   transition: background-color 0.3s;
 
@@ -338,7 +340,7 @@
   }
 
   .username {
-    color: #333;
+    color: var(--text-light);
     font-size: 14px;
     max-width: 100px;
     overflow: hidden;
