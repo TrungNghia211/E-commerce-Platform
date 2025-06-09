@@ -9,16 +9,12 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
   {
-    key: "category",
-    label: "Quản lý danh mục",
+    key: "dashboard",
+    label: "Dashboard",
   },
   {
-    key: "product",
-    label: "Quản lý sản phẩm",
-    children: [
-      { key: "addProduct", label: "Thêm sản phẩm" },
-      { key: "productList", label: "Danh sách sản phẩm" },
-    ],
+    key: "category",
+    label: "Quản lý danh mục",
   },
 ];
 
@@ -31,12 +27,8 @@ const getLevelKeys = (items1: LevelKeysProps[]) => {
   const key: Record<string, number> = {};
   const func = (items2: LevelKeysProps[], level = 1) => {
     items2.forEach((item) => {
-      if (item.key) {
-        key[item.key] = level;
-      }
-      if (item.children) {
-        func(item.children, level + 1);
-      }
+      if (item.key) key[item.key] = level;
+      if (item.children) func(item.children, level + 1);
     });
   };
   func(items1);
@@ -75,12 +67,14 @@ export default function AdminMenu() {
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     switch (key) {
+      case "dashboard":
+        router.push("/admin/dashboard");
+        break;
+
       case "category":
         router.push("/admin/category");
         break;
-      case "addProduct":
-        router.push("/");
-        break;
+
       default:
         break;
     }

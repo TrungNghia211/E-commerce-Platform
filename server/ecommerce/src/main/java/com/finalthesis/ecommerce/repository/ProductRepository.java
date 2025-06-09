@@ -1,5 +1,6 @@
 package com.finalthesis.ecommerce.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -36,4 +37,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
                 "variations.variationOptions"
             })
     Optional<Product> findWithAllDetailsById(Integer id);
+
+    Long countByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    // Optionally, if you want to count products by shop as well:
+    Long countByShopIdAndCreatedAtBetween(Integer shopId, LocalDateTime startDate, LocalDateTime endDate);
 }

@@ -9,8 +9,12 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
   {
-    key: "category",
-    label: "Quản lý danh mục",
+    key: "dashboard",
+    label: "Dashboard",
+  },
+  {
+    key: "order",
+    label: "Quản lý đơn hàng",
   },
   {
     key: "product",
@@ -18,14 +22,6 @@ const items: MenuItem[] = [
     children: [
       { key: "addProduct", label: "Thêm sản phẩm" },
       { key: "productList", label: "Danh sách sản phẩm" },
-    ],
-  },
-  {
-    key: "order",
-    label: "Quản lý đơn hàng",
-    children: [
-      { key: "orderList", label: "Danh sách đơn hàng" },
-      { key: "orderStatistics", label: "Thống kê đơn hàng" },
     ],
   },
 ];
@@ -83,21 +79,22 @@ export default function SellerMenu() {
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     switch (key) {
-      case "category":
-        router.push("/admin/category");
+      case "dashboard":
+        router.push("/shop/dashboard");
         break;
+
       case "addProduct":
         router.push("/shop/products/add");
         break;
+
       case "productList":
         router.push("/shop/products");
         break;
-      case "orderList":
+
+      case "order":
         router.push("/shop/orders");
         break;
-      case "orderStatistics":
-        router.push("/shop/orders/statistics");
-        break;
+
       default:
         break;
     }
