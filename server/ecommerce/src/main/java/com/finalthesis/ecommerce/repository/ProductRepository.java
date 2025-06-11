@@ -42,4 +42,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     // Optionally, if you want to count products by shop as well:
     Long countByShopIdAndCreatedAtBetween(Integer shopId, LocalDateTime startDate, LocalDateTime endDate);
+
+    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

@@ -1,10 +1,6 @@
 package com.finalthesis.ecommerce.service.impl;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -12,7 +8,6 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,16 +16,13 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.finalthesis.ecommerce.service.CloudinaryService;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-//@Service
-//@RequiredArgsConstructor
-//@Slf4j
-//@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-//public class CloudinaryServiceImpl implements CloudinaryService {
+// @Service
+// @RequiredArgsConstructor
+// @Slf4j
+// @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+// public class CloudinaryServiceImpl implements CloudinaryService {
 //    Cloudinary cloudinary;
 //
 //    @Override
@@ -71,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 //    public String[] getFileName(String originalName) {
 //        return originalName.split("\\.");
 //    }
-//}
+// }
 
 @Service
 @Slf4j
@@ -79,8 +71,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
     private final Executor executor;
 
-    public CloudinaryServiceImpl(Cloudinary cloudinary,
-                                 @Qualifier("cloudinaryExecutor") Executor executor) {
+    public CloudinaryServiceImpl(Cloudinary cloudinary, @Qualifier("cloudinaryExecutor") Executor executor) {
         this.cloudinary = cloudinary;
         this.executor = executor;
     }
@@ -92,16 +83,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         String publicId = UUID.randomUUID() + "_" + FilenameUtils.getBaseName(original);
 
         // Thiết lập options
-        Map<String, Object> options = ObjectUtils.asMap(
-                "public_id", publicId,
-                "resource_type", "image"
-        );
+        Map<String, Object> options = ObjectUtils.asMap("public_id", publicId, "resource_type", "image");
 
         // Gửi byte[] thẳng lên Cloudinary
         @SuppressWarnings("unchecked")
-        Map<String, Object> result = cloudinary
-                .uploader()
-                .upload(file.getBytes(), options);
+        Map<String, Object> result = cloudinary.uploader().upload(file.getBytes(), options);
 
         // Trả về secure_url
         return result.get("secure_url").toString();
@@ -109,13 +95,15 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     public CompletableFuture<String> uploadFileAsync(MultipartFile file) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return uploadFile(file);
-            } catch (IOException e) {
-                log.error("Async upload failed for file: {}", file.getOriginalFilename(), e);
-                throw new CompletionException(e);
-            }
-        }, executor);
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return uploadFile(file);
+                    } catch (IOException e) {
+                        log.error("Async upload failed for file: {}", file.getOriginalFilename(), e);
+                        throw new CompletionException(e);
+                    }
+                },
+                executor);
     }
 }

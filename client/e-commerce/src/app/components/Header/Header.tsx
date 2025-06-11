@@ -7,24 +7,40 @@ import {
   UserOutlined,
   LogoutOutlined,
   UserSwitchOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import classNames from "classnames/bind";
-import { Avatar, Dropdown, MenuProps } from "antd";
-import { useState, useEffect } from "react";
+import { Avatar, Dropdown, MenuProps, Input } from "antd";
+import { useState, useEffect, useCallback } from "react";
+import { debounce } from "lodash";
 
 import styles from "./Header.module.scss";
 import { useCart } from "@/app/store/CartContext";
 import { clientSessionToken } from "@/lib/http";
 import userApiRequest from "@/apiRequests/user";
+import productApiRequest from "@/apiRequests/product";
+import { HomepageProductResponse } from "@/types/product";
+
+interface UserInfo {
+  id: number;
+  username: string;
+  email: string;
+  avatar?: string;
+}
 
 const cx = classNames.bind(styles);
 
 function Header() {
   const { cartCount } = useCart();
   const displayCartCount = clientSessionToken.value ? cartCount : 0;
-  const [userInfo, setUserInfo] = useState<any>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchResults, setSearchResults] = useState<HomepageProductResponse[]>(
+    []
+  );
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -75,6 +91,48 @@ function Header() {
       // onClick: handleLogout,
     },
   ];
+
+  const handleSearch = useCallback(
+    debounce(async (keyword: string) => {
+      if (!keyword.trim()) {
+        setSearchResults([]);
+        return;
+      }
+
+      try {
+        setIsSearching(true);
+        const response = await productApiRequest.searchProducts(keyword);
+        setSearchResults(response.payload.result.content);
+      } catch (error) {
+        console.error("Error searching products:", error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 500),
+    []
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchKeyword(value);
+    handleSearch(value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchKeyword("");
+    setSearchResults([]);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchKeyword.trim()) {
+      router.push(
+        `/search?keyword=${encodeURIComponent(searchKeyword.trim())}`
+      );
+      setSearchResults([]);
+    }
+  };
 
   return (
     <>
@@ -135,19 +193,56 @@ function Header() {
             <div className={cx("logoText")}>🛍️ ShopHub</div>
           </Link>
 
-          <div className={cx("inputWrapper")}>
+          <form onSubmit={handleSearchSubmit} className={cx("inputWrapper")}>
             <div className={cx("searchInputContainer")}>
-              <input
+              <Input
                 className={cx("searchInput")}
                 placeholder="Bạn tìm gì hôm nay..."
+                value={searchKeyword}
+                onChange={handleSearchChange}
                 spellCheck={false}
+                suffix={
+                  <CloseOutlined
+                    className={cx("clearIcon", {
+                      hidden: !searchKeyword,
+                    })}
+                    onClick={handleClearSearch}
+                  />
+                }
               />
+              {searchResults.length > 0 && (
+                <div className={cx("searchResults")}>
+                  {searchResults.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/products/${product.id}`}
+                      className={cx("searchResultItem")}
+                      onClick={() => setSearchResults([])}
+                    >
+                      <img
+                        src={product.thumbnail}
+                        alt={product.name}
+                        className={cx("searchResultImage")}
+                      />
+                      <div className={cx("searchResultInfo")}>
+                        <div className={cx("searchResultName")}>
+                          {product.name}
+                        </div>
+                        <div className={cx("searchResultPrice")}>
+                          {new Intl.NumberFormat("vi-VN").format(product.price)}
+                          đ
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <button className={cx("searchBtn")}>
+            <button type="submit" className={cx("searchBtn")}>
               <SearchOutlined className={cx("searchIcon")} />
             </button>
-          </div>
+          </form>
 
           <button className={cx("cartBtn")} onClick={handleCartClick}>
             <ShoppingCartOutlined className={cx("cartIcon")} />

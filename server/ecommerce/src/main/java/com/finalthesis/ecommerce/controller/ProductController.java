@@ -91,8 +91,7 @@ public class ProductController {
             @RequestPart("product") ProductCreationRequest request,
             @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
             @RequestPart(value = "thumbnailFiles", required = false) List<MultipartFile> thumbnailFiles) {
-        if (thumbnail != null && !thumbnail.isEmpty())
-            request.setThumbnail(thumbnail);
+        if (thumbnail != null && !thumbnail.isEmpty()) request.setThumbnail(thumbnail);
 
         // Set thumbnail files for product items if provided
         if (request.getProductItems() != null && thumbnailFiles != null && !thumbnailFiles.isEmpty())
@@ -118,5 +117,15 @@ public class ProductController {
     ApiResponse<ProductDetailResponse> getSellerProductDetail(@PathVariable Integer id) {
         ProductDetailResponse product = productService.getSellerProductDetail(id);
         return ApiResponse.<ProductDetailResponse>builder().result(product).build();
+    }
+
+    @GetMapping("/search")
+    ApiResponse<Page<HomepageProductResponse>> searchProducts(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        return ApiResponse.<Page<HomepageProductResponse>>builder()
+                .result(productService.searchProducts(keyword, pageNumber, pageSize))
+                .build();
     }
 }

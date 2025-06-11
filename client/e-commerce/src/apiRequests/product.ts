@@ -1,5 +1,6 @@
 import http from "@/lib/http";
 import type { ProductResponse, Page, ApiResponse } from "@/types/product";
+import { HomepageProductResponse } from "@/types/product";
 
 interface ProductResponse {
   id: string;
@@ -46,6 +47,15 @@ const productApiRequest = {
     http.get<ApiResponse<ProductDetailResponse>>(
       `/products/seller/${productId}`
     ),
+
+  searchProducts: (
+    keyword: string,
+    pageNumber: number = 1,
+    pageSize: number = 10
+  ) =>
+    http.get<ApiResponse<Page<HomepageProductResponse>>>("/products/search", {
+      params: { keyword, pageNumber, pageSize },
+    }),
 };
 
 export default productApiRequest;

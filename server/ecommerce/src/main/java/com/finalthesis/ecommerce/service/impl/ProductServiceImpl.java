@@ -64,115 +64,118 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.getHomepageProducts(pageable);
     }
 
-//    @Override
-//    @Transactional
-//    public ProductResponse createProduct(ProductCreationRequest request) {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user =
-//                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-//
-//        ProductCategory category = productCategoryRepository
-//                .findById(request.getCategoryId())
-//                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND));
-//
-//        Shop shop = user.getShop();
-//
-//        Product product = productMapper.toProduct(request);
-//        product.setCategory(category);
-//        product.setShop(shop);
-//
-//        MultipartFile productThumbnailFile = request.getThumbnail();
-//        if (productThumbnailFile != null && !productThumbnailFile.isEmpty())
-//            try {
-//                String thumbnailUrl = cloudinaryService.uploadFile(productThumbnailFile);
-//                product.setThumbnail(thumbnailUrl);
-//            } catch (Exception e) {
-//                throw new RuntimeException("Failed to upload product thumbnail", e);
-//            }
-//
-//        // Create and link Variations and VariationOptions
-//        Set<Variation> variations = new HashSet<>();
-//        if (request.getVariations() != null) {
-//            for (VariationCreationRequest variationDTO : request.getVariations()) {
-//                Variation variation = variationMapper.toVariation(variationDTO);
-//                variation.setProduct(product);
-//
-//                Set<VariationOption> options = new HashSet<>();
-//                if (variationDTO.getOptions() != null) {
-//                    for (VariationOptionRequest optionDTO : variationDTO.getOptions()) {
-//                        VariationOption option = variationOptionMapper.toVariationOption(optionDTO);
-//                        option.setVariation(variation);
-//                        options.add(option);
-//                    }
-//                }
-//                variation.setVariationOptions(options);
-//                variations.add(variation);
-//            }
-//        }
-//        product.setVariations(variations);
-//
-//        Product savedProduct = productRepository.save(product);
-//
-//        // Create and link ProductItems
-//        Set<ProductItem> productItems = new HashSet<>();
-//        int totalQuantity = 0;
-//
-//        if (request.getProductItems() != null) {
-//            for (ProductItemRequest itemDTO : request.getProductItems()) {
-//                ProductItem productItem = productItemMapper.toProductItem(itemDTO);
-//                productItem.setProduct(savedProduct);
-//
-//                // Link VariationOptions to ProductItem based on values
-//                Set<VariationOption> itemOptions = new HashSet<>();
-//                if (itemDTO.getVariationOptionValues() != null) {
-//                    for (String optionValue : itemDTO.getVariationOptionValues()) {
-//                        // Find the VariationOption by value and linked to one of the product's variations
-//                        // This assumes VariationOptions have been saved with the product due to cascade
-//                        VariationOption option = savedProduct.getVariations().stream()
-//                                .flatMap(v -> v.getVariationOptions().stream())
-//                                .filter(vo -> vo.getValue() != null
-//                                        && vo.getValue().equalsIgnoreCase(optionValue)) // Keep case-insensitive search
-//                                .findFirst()
-//                                .orElseThrow(() ->
-//                                        new RuntimeException("Variation Option not found with value: " + optionValue));
-//                        itemOptions.add(option);
-//                    }
-//                }
-//                productItem.setVariationOptions(itemOptions);
-//
-//                MultipartFile itemThumbnailFile = itemDTO.getThumbnailFiles();
-//                if (itemThumbnailFile != null && !itemThumbnailFile.isEmpty()) {
-//                    try {
-//                        String itemThumbnailUrl = cloudinaryService.uploadFile(itemThumbnailFile);
-//                        productItem.setThumbnail(itemThumbnailUrl);
-//                    } catch (Exception e) {
-//                        throw new RuntimeException("Failed to upload product item thumbnail", e);
-//                    }
-//                }
-//
-//                productItems.add(productItem);
-//                totalQuantity += productItem.getQuantityInStock();
-//            }
-//        }
-//        savedProduct.setProductItems(productItems);
-//
-//        savedProduct.setQuantityInStock(totalQuantity);
-//
-//        // Save ProductItems (assuming cascade is not configured from Product to ProductItem)
-//        productItemRepository.saveAll(productItems);
-//
-//        productRepository.save(savedProduct);
-//
-//        return productMapper.toProductResponse(savedProduct);
-//    }
+    //    @Override
+    //    @Transactional
+    //    public ProductResponse createProduct(ProductCreationRequest request) {
+    //        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    //        User user =
+    //                userRepository.findByUsername(username).orElseThrow(() -> new
+    // AppException(ErrorCode.USER_NOT_EXISTED));
+    //
+    //        ProductCategory category = productCategoryRepository
+    //                .findById(request.getCategoryId())
+    //                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND));
+    //
+    //        Shop shop = user.getShop();
+    //
+    //        Product product = productMapper.toProduct(request);
+    //        product.setCategory(category);
+    //        product.setShop(shop);
+    //
+    //        MultipartFile productThumbnailFile = request.getThumbnail();
+    //        if (productThumbnailFile != null && !productThumbnailFile.isEmpty())
+    //            try {
+    //                String thumbnailUrl = cloudinaryService.uploadFile(productThumbnailFile);
+    //                product.setThumbnail(thumbnailUrl);
+    //            } catch (Exception e) {
+    //                throw new RuntimeException("Failed to upload product thumbnail", e);
+    //            }
+    //
+    //        // Create and link Variations and VariationOptions
+    //        Set<Variation> variations = new HashSet<>();
+    //        if (request.getVariations() != null) {
+    //            for (VariationCreationRequest variationDTO : request.getVariations()) {
+    //                Variation variation = variationMapper.toVariation(variationDTO);
+    //                variation.setProduct(product);
+    //
+    //                Set<VariationOption> options = new HashSet<>();
+    //                if (variationDTO.getOptions() != null) {
+    //                    for (VariationOptionRequest optionDTO : variationDTO.getOptions()) {
+    //                        VariationOption option = variationOptionMapper.toVariationOption(optionDTO);
+    //                        option.setVariation(variation);
+    //                        options.add(option);
+    //                    }
+    //                }
+    //                variation.setVariationOptions(options);
+    //                variations.add(variation);
+    //            }
+    //        }
+    //        product.setVariations(variations);
+    //
+    //        Product savedProduct = productRepository.save(product);
+    //
+    //        // Create and link ProductItems
+    //        Set<ProductItem> productItems = new HashSet<>();
+    //        int totalQuantity = 0;
+    //
+    //        if (request.getProductItems() != null) {
+    //            for (ProductItemRequest itemDTO : request.getProductItems()) {
+    //                ProductItem productItem = productItemMapper.toProductItem(itemDTO);
+    //                productItem.setProduct(savedProduct);
+    //
+    //                // Link VariationOptions to ProductItem based on values
+    //                Set<VariationOption> itemOptions = new HashSet<>();
+    //                if (itemDTO.getVariationOptionValues() != null) {
+    //                    for (String optionValue : itemDTO.getVariationOptionValues()) {
+    //                        // Find the VariationOption by value and linked to one of the product's variations
+    //                        // This assumes VariationOptions have been saved with the product due to cascade
+    //                        VariationOption option = savedProduct.getVariations().stream()
+    //                                .flatMap(v -> v.getVariationOptions().stream())
+    //                                .filter(vo -> vo.getValue() != null
+    //                                        && vo.getValue().equalsIgnoreCase(optionValue)) // Keep case-insensitive
+    // search
+    //                                .findFirst()
+    //                                .orElseThrow(() ->
+    //                                        new RuntimeException("Variation Option not found with value: " +
+    // optionValue));
+    //                        itemOptions.add(option);
+    //                    }
+    //                }
+    //                productItem.setVariationOptions(itemOptions);
+    //
+    //                MultipartFile itemThumbnailFile = itemDTO.getThumbnailFiles();
+    //                if (itemThumbnailFile != null && !itemThumbnailFile.isEmpty()) {
+    //                    try {
+    //                        String itemThumbnailUrl = cloudinaryService.uploadFile(itemThumbnailFile);
+    //                        productItem.setThumbnail(itemThumbnailUrl);
+    //                    } catch (Exception e) {
+    //                        throw new RuntimeException("Failed to upload product item thumbnail", e);
+    //                    }
+    //                }
+    //
+    //                productItems.add(productItem);
+    //                totalQuantity += productItem.getQuantityInStock();
+    //            }
+    //        }
+    //        savedProduct.setProductItems(productItems);
+    //
+    //        savedProduct.setQuantityInStock(totalQuantity);
+    //
+    //        // Save ProductItems (assuming cascade is not configured from Product to ProductItem)
+    //        productItemRepository.saveAll(productItems);
+    //
+    //        productRepository.save(savedProduct);
+    //
+    //        return productMapper.toProductResponse(savedProduct);
+    //    }
 
     @Override
     @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         // 1. Lấy user, category, shop
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         ProductCategory category = productCategoryRepository
                 .findById(request.getCategoryId())
@@ -224,8 +227,8 @@ public class ProductServiceImpl implements ProductService {
                     for (String optionValue : itemDTO.getVariationOptionValues()) {
                         VariationOption option = savedProduct.getVariations().stream()
                                 .flatMap(v -> v.getVariationOptions().stream())
-                                .filter(vo -> vo.getValue() != null
-                                        && vo.getValue().equalsIgnoreCase(optionValue))
+                                .filter(vo ->
+                                        vo.getValue() != null && vo.getValue().equalsIgnoreCase(optionValue))
                                 .findFirst()
                                 .orElseThrow(() ->
                                         new RuntimeException("Variation Option not found with value: " + optionValue));
@@ -242,7 +245,8 @@ public class ProductServiceImpl implements ProductService {
         // 6. Upload ảnh song song - thumbnail chính + thumbnails của items
         CompletableFuture<String> productThumbnailFuture = null;
         if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
-            productThumbnailFuture = cloudinaryService.uploadFileAsync(request.getThumbnail())
+            productThumbnailFuture = cloudinaryService
+                    .uploadFileAsync(request.getThumbnail())
                     .exceptionally(ex -> {
                         throw new RuntimeException("Failed to upload product thumbnail", ex);
                     });
@@ -251,7 +255,8 @@ public class ProductServiceImpl implements ProductService {
         List<CompletableFuture<Void>> itemThumbnailFutures = new ArrayList<>();
         for (int i = 0; i < productItems.size(); i++) {
             if (i < request.getProductItems().size()) {
-                MultipartFile itemThumbnailFile = request.getProductItems().get(i).getThumbnailFiles();
+                MultipartFile itemThumbnailFile =
+                        request.getProductItems().get(i).getThumbnailFiles();
                 if (itemThumbnailFile != null && !itemThumbnailFile.isEmpty()) {
                     ProductItem currentItem = productItems.get(i);
                     CompletableFuture<Void> itemFuture = cloudinaryService
@@ -273,7 +278,8 @@ public class ProductServiceImpl implements ProductService {
 
         if (!allUploadTasks.isEmpty()) {
             try {
-                CompletableFuture.allOf(allUploadTasks.toArray(new CompletableFuture[0])).join();
+                CompletableFuture.allOf(allUploadTasks.toArray(new CompletableFuture[0]))
+                        .join();
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload images", e);
             }
@@ -601,8 +607,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Integer productId, ProductCreationRequest request) {
         // 1. Validation và load existing product
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user =
+                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Product existingProduct = productRepository
                 .findWithAllDetailsById(productId)
@@ -626,8 +632,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setLength(request.getLength());
         existingProduct.setHeight(request.getHeight());
 
-        if (request.getPrice() != null)
-            existingProduct.setPrice(request.getPrice());
+        if (request.getPrice() != null) existingProduct.setPrice(request.getPrice());
 
         // 3. Prepare new variations (chưa set vào product)
         Set<Variation> newVariations = prepareVariations(existingProduct, request.getVariations());
@@ -642,7 +647,8 @@ public class ProductServiceImpl implements ProductService {
         // Upload product thumbnail
         CompletableFuture<String> productThumbnailFuture = null;
         if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
-            productThumbnailFuture = cloudinaryService.uploadFileAsync(request.getThumbnail())
+            productThumbnailFuture = cloudinaryService
+                    .uploadFileAsync(request.getThumbnail())
                     .exceptionally(ex -> {
                         throw new RuntimeException("Failed to upload product thumbnail", ex);
                     });
@@ -655,7 +661,8 @@ public class ProductServiceImpl implements ProductService {
             for (int i = 0; i < request.getProductItems().size(); i++) {
                 MultipartFile thumbnailFile = request.getProductItems().get(i).getThumbnailFiles();
                 if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-                    CompletableFuture<String> itemFuture = cloudinaryService.uploadFileAsync(thumbnailFile)
+                    CompletableFuture<String> itemFuture = cloudinaryService
+                            .uploadFileAsync(thumbnailFile)
                             .exceptionally(ex -> {
                                 throw new RuntimeException("Failed to upload product item thumbnail", ex);
                             });
@@ -670,7 +677,8 @@ public class ProductServiceImpl implements ProductService {
         // 6. Execute all uploads in parallel
         if (!uploadTasks.isEmpty()) {
             try {
-                CompletableFuture.allOf(uploadTasks.toArray(new CompletableFuture[0])).join();
+                CompletableFuture.allOf(uploadTasks.toArray(new CompletableFuture[0]))
+                        .join();
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload images", e);
             }
@@ -715,9 +723,9 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.getProductItems().clear();
         existingProduct.getProductItems().addAll(newProductItems);
 
-//        existingProduct.setVariations(newVariations);
+        //        existingProduct.setVariations(newVariations);
 
-//        existingProduct.setProductItems(new HashSet<>(newProductItems));
+        //        existingProduct.setProductItems(new HashSet<>(newProductItems));
 
         // 11. Single save operation
         return productMapper.toProductResponse(productRepository.save(existingProduct));
@@ -761,8 +769,8 @@ public class ProductServiceImpl implements ProductService {
         return newProductItems;
     }
 
-    private void linkVariationOptionsToItems(List<ProductItem> productItems, Set<Variation> variations,
-                                             List<ProductItemRequest> itemRequests) {
+    private void linkVariationOptionsToItems(
+            List<ProductItem> productItems, Set<Variation> variations, List<ProductItemRequest> itemRequests) {
         if (itemRequests == null || productItems.isEmpty()) return;
 
         for (int i = 0; i < productItems.size() && i < itemRequests.size(); i++) {
@@ -812,5 +820,21 @@ public class ProductServiceImpl implements ProductService {
             throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
 
         return ProductMapperManual.toProductDetailResponse(product);
+    }
+
+    @Override
+    public Page<HomepageProductResponse> searchProducts(String keyword, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return productRepository
+                .findByNameContainingIgnoreCase(keyword, pageable)
+                .map(product -> {
+                    HomepageProductResponse response = new HomepageProductResponse();
+                    response.setId(product.getId());
+                    response.setName(product.getName());
+                    response.setPrice(product.getPrice());
+                    response.setThumbnail(product.getThumbnail());
+                    response.setBuyTurn(product.getBuyTurn());
+                    return response;
+                });
     }
 }

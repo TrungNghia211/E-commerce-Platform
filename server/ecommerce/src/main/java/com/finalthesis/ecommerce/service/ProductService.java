@@ -21,4 +21,6 @@ public interface ProductService {
     void deleteProduct(Integer productId);
 
     ProductDetailResponse getSellerProductDetail(Integer productId);
+
+    Page<HomepageProductResponse> searchProducts(String keyword, int pageNumber, int pageSize);
 }
