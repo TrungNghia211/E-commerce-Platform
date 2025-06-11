@@ -66,4 +66,57 @@ public class ProductController {
         ProductDetailResponse product = productService.getProductDetailById(id);
         return ApiResponse.<ProductDetailResponse>builder().result(product).build();
     }
+
+    //    @PutMapping("/{id}")
+    //    @PreAuthorize("hasRole('SELLER')")
+    //    ApiResponse<ProductResponse> updateProduct(
+    //            @PathVariable Integer id,
+    //            @RequestPart("product") ProductCreationRequest request,
+    //            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+    //            @RequestPart(value = "thumbnailFiles", required = false) List<MultipartFile> thumbnailFiles) {
+    //        request.setThumbnail(thumbnail);
+    //
+    //        if (request.getProductItems() != null && thumbnailFiles != null)
+    //            for (int i = 0; i < Math.min(request.getProductItems().size(), thumbnailFiles.size()); i++)
+    //                request.getProductItems().get(i).setThumbnailFiles(thumbnailFiles.get(i));
+    //
+    //        ProductResponse updatedProduct = productService.updateProduct(id, request);
+    //        return ApiResponse.<ProductResponse>builder().result(updatedProduct).build();
+    //    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ApiResponse<ProductResponse> updateProduct(
+            @PathVariable Integer id,
+            @RequestPart("product") ProductCreationRequest request,
+            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+            @RequestPart(value = "thumbnailFiles", required = false) List<MultipartFile> thumbnailFiles) {
+        if (thumbnail != null && !thumbnail.isEmpty())
+            request.setThumbnail(thumbnail);
+
+        // Set thumbnail files for product items if provided
+        if (request.getProductItems() != null && thumbnailFiles != null && !thumbnailFiles.isEmpty())
+            for (int i = 0; i < Math.min(request.getProductItems().size(), thumbnailFiles.size()); i++) {
+                MultipartFile file = thumbnailFiles.get(i);
+                if (file != null && !file.isEmpty())
+                    request.getProductItems().get(i).setThumbnailFiles(file);
+            }
+
+        ProductResponse updatedProduct = productService.updateProduct(id, request);
+        return ApiResponse.<ProductResponse>builder().result(updatedProduct).build();
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
+    ApiResponse<Void> deleteProduct(@PathVariable Integer id) {
+        productService.deleteProduct(id);
+        return ApiResponse.<Void>builder().build();
+    }
+
+    @GetMapping("/seller/{id}")
+    @PreAuthorize("hasRole('SELLER')")
+    ApiResponse<ProductDetailResponse> getSellerProductDetail(@PathVariable Integer id) {
+        ProductDetailResponse product = productService.getSellerProductDetail(id);
+        return ApiResponse.<ProductDetailResponse>builder().result(product).build();
+    }
 }

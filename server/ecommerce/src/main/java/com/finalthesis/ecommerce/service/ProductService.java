@@ -15,4 +15,10 @@ public interface ProductService {
     Page<ProductResponse> getSellerProducts(int pageNumber, int pageSize);
 
     ProductDetailResponse getProductDetailById(Integer productId);
+
+    ProductResponse updateProduct(Integer productId, ProductCreationRequest request);
+
+    void deleteProduct(Integer productId);
+
+    ProductDetailResponse getSellerProductDetail(Integer productId);
 }

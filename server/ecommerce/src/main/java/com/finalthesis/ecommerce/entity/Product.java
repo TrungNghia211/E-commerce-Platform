@@ -64,10 +64,10 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     ProductCategory category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<ProductItem> productItems = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Variation> variations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

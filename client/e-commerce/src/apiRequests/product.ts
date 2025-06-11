@@ -32,6 +32,20 @@ const productApiRequest = {
 
   getProductDetail: (productId: number) =>
     http.get<any>(`/products/${productId}`),
+
+  updateProduct: (productId: number, formData: FormData) =>
+    http.put<ProductResponse>(`/products/${productId}`, formData),
+
+  deleteProduct: (productId: number) =>
+    http.delete<void>(`/products/${productId}`),
+
+  updateProductStatus: (productId: number, active: boolean) =>
+    http.put<ProductResponse>(`/products/${productId}/status?active=${active}`),
+
+  getSellerProductDetail: (productId: number) =>
+    http.get<ApiResponse<ProductDetailResponse>>(
+      `/products/seller/${productId}`
+    ),
 };
 
 export default productApiRequest;
