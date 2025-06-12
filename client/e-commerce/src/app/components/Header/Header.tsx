@@ -68,6 +68,12 @@ function Header() {
   //   router.push("/login");
   // };
 
+  const handleLogout = async () => {
+    await userApiRequest.logout();
+    clientSessionToken.value = "";
+    router.push("/login");
+  };
+
   const userMenuItems: MenuProps["items"] = [
     {
       key: "account",
@@ -82,7 +88,7 @@ function Header() {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Đăng xuất",
-      // onClick: handleLogout,
+      onClick: handleLogout,
     },
   ];
 
