@@ -75,12 +75,6 @@ function Header() {
       label: "Tài khoản của tôi",
       onClick: () => router.push("/profile"),
     },
-    // {
-    //   key: "orders",
-    //   icon: <ShoppingOutlined />,
-    //   label: "Đơn mua",
-    //   onClick: () => router.push("/orders"),
-    // },
     {
       type: "divider",
     },

@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
 
       const roles = decoded.scope.split(" ");
       if (!roles.includes("SELLER"))
-        return NextResponse.redirect(new URL("/shop/create-shop", request.url));
+        return NextResponse.redirect(new URL("/create-shop", request.url));
 
       return NextResponse.next();
     } catch (error) {
