@@ -12,9 +12,10 @@ import IdentificationForm from "@/app/components/Forms/IdentificationForm/Identi
 import CompletionForm from "@/app/components/Forms/CompletionForm/CompletionForm";
 import { AddressContext } from "@/app/store/AddressContext";
 import shopApiRequest from "@/apiRequests/shop";
-import { HttpError } from "@/lib/http";
+import { clientSessionToken, HttpError } from "@/lib/http";
 import { StoreCreationRequestType } from "@/types/address/types";
 import { createShopGHN } from "@/app/utils/address";
+import userApiRequest from "@/apiRequests/user";
 
 const cx = classNames.bind(styles);
 
@@ -88,7 +89,16 @@ export default function CreateShopPage() {
 
       await shopApiRequest.createShop(request);
 
-      router.push("/");
+      await userApiRequest.logout();
+
+      clientSessionToken.value = "";
+
+      setMessageState({
+        type: "success",
+        content: "Tạo shop thành công! Vui lòng đăng nhập lại để tiếp tục.",
+      });
+
+      setTimeout(() => router.push("/login"), 500);
     } catch (error) {
       if (error instanceof HttpError) {
         if (error.payload.code === 1014) {
